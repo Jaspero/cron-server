@@ -1,0 +1,19 @@
+{
+  "name": "cron-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch:server": "npm --prefix server run watch",
+    "start:server": "npm --prefix server run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jaspero/cron-server.git"
+  },
+  "author": "Jaspero",
+  "bugs": {
+    "url": "https://github.com/Jaspero/cron-server/issues"
+  },
+  "homepage": "https://github.com/Jaspero/cron-server#readme"
+}
