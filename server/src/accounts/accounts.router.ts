@@ -1,12 +1,12 @@
 import {Router} from 'express';
 import {authenticatedUser} from '../midlewares/authenticated-user';
+import {ApiError} from '../utils/api-error';
 import {reqWrapper} from '../utils/req-wrapper';
 import {AccountModel} from './account';
 
 const router = Router();
 
 router.use(authenticatedUser);
-
 
 router.get(
   '/',
@@ -20,17 +20,44 @@ router.get(
   })
 );
 
+router.post(
+  '/',
+  reqWrapper(async req => {
+    const {_id} = await new AccountModel(req.body).save();
+    return {_id};
+  })
+);
+
 router.put(
   '/:id',
   reqWrapper(async (req, res) => {
-    await AccountModel.updateOne({_id: req.params.id}, req.body);
+
+    const account = await AccountModel.findById(req.params.id);
+
+    if (!account) {
+      throw new ApiError('Account not found.', 400);
+    }
+
+    for (const key in req.body) {
+      // @ts-ignore
+      account[key] = req.body[key];
+    }
+
+    await account.save();
   })
 );
 
 router.delete(
   '/:id',
   reqWrapper(async (req, res) => {
-    await AccountModel.deleteOne({_id: req.params.id});
+
+    const account = await AccountModel.findById(req.params.id);
+
+    if (!account) {
+      throw new ApiError('Account not found.', 400);
+    }
+
+    await account.remove();
   })
 );
 

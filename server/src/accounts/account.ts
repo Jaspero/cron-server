@@ -17,7 +17,7 @@ export interface IAccountSchema extends Model<Account> {
 }
 
 const AccountSchema = new Schema<User>({
-  email: {
+  name: {
     type: String,
     required: true
   },

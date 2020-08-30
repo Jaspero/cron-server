@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db": "mongod",
     "watch:server": "npm --prefix server run watch",
-    "start:server": "npm --prefix server run start"
+    "start:server": "npm --prefix server run start",
+    "start:server:watch": "npm --prefix server run start:watch"
   },
   "repository": {
     "type": "git",
