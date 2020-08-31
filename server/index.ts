@@ -7,6 +7,7 @@ import {accountsRouter} from './src/accounts/accounts.router';
 import {CONFIG} from './src/config';
 import {JobModel} from './src/jobs/job';
 import {jobsRouter} from './src/jobs/jobs.router';
+import {responsesRouter} from './src/responses/responses.router';
 import {UserModel} from './src/users/user';
 import {usersRouter} from './src/users/users.router';
 
@@ -51,6 +52,7 @@ app.use(cors());
 app.use('/users', usersRouter);
 app.use('/accounts', accountsRouter);
 app.use('/jobs', jobsRouter);
+app.use('/responses', responsesRouter);
 
 app.listen(app.get('port'), () => {
   console.log(
