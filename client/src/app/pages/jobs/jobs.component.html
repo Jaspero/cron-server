@@ -1,0 +1,20 @@
+<mat-accordion>
+    <mat-expansion-panel *ngFor="let job of jobs$ | async">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{job.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+                This is a summary of the content
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent>
+            Some deferred content
+        </ng-template>
+
+        <mat-action-row>
+            <button mat-button color="primary">Next</button>
+        </mat-action-row>
+    </mat-expansion-panel>
+</mat-accordion>

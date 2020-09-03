@@ -28,6 +28,19 @@ router.post(
   })
 );
 
+router.get(
+  '/:id',
+  reqWrapper(async req => {
+    const account = await AccountModel.findById(req.params.id);
+
+    if (!account) {
+      throw new ApiError('Account not found.', 400);
+    }
+
+    return account;
+  })
+);
+
 router.put(
   '/:id',
   reqWrapper(async (req, res) => {

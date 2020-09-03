@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "db": "mongod",
+    "build:server": "npm --prefix server run build",
     "watch:server": "npm --prefix server run watch",
     "start:server": "npm --prefix server run start",
-    "start:server:watch": "npm --prefix server run start:watch"
+    "start:server:watch": "npm --prefix server run start:watch",
+    "build:client": "npm --prefix client run build",
+    "start:client": "npm --prefix client run start",
+    "build": "npm run build:server && npm run build:client"
   },
   "repository": {
     "type": "git",

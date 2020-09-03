@@ -1,3 +1,4 @@
+import {join} from 'path';
 import {json} from 'body-parser';
 import compression from 'compression';
 import express from 'express';
@@ -49,10 +50,29 @@ app.use(json());
 app.use(cors());
 
 
-app.use('/users', usersRouter);
-app.use('/accounts', accountsRouter);
-app.use('/jobs', jobsRouter);
-app.use('/responses', responsesRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/accounts', accountsRouter);
+app.use('/api/jobs', jobsRouter);
+app.use('/api/responses', responsesRouter);
+
+app.get('/api/**', (req, res) =>
+  res
+    .status(400)
+    .json({
+      error: 'Unknown request.'
+    })
+);
+
+app.use(
+  express.static(
+    join(__dirname, '../static')
+  )
+);
+app.get('**', (req, res) =>
+  res.sendFile(
+    join(__dirname, '../static/index.html')
+  )
+);
 
 app.listen(app.get('port'), () => {
   console.log(

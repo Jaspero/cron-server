@@ -1,0 +1,17 @@
+<div *ngFor="let account of accounts$ | async">
+    <span>{{account.name}}</span>
+
+    <div>
+        <button mat-icon-button>
+            <mat-icon>delete</mat-icon>
+        </button>
+        &nbsp;
+        <button mat-icon-button>
+            <mat-icon>create</mat-icon>
+        </button>
+        &nbsp;
+        <a mat-icon-button [routerLink]="[account._id, 'jobs']">
+            <mat-icon>arrow-forward</mat-icon>
+        </a>
+    </div>
+</div>
