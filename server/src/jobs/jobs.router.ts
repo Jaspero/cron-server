@@ -45,7 +45,9 @@ router.post(
         account
       }).save();
 
-      return nJob.toObject();
+      return {
+        _id: nJob._id
+      };
     }
   })
 );

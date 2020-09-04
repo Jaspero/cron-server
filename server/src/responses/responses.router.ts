@@ -9,10 +9,11 @@ const router = Router();
 router.use(authenticatedAccount);
 
 router.get(
-  '/',
+  '/:job',
   reqWrapper(async req => {
     // @ts-ignore
     const account = req['account'] || req.query.account;
+    const {job} = req.params;
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
 
@@ -23,7 +24,9 @@ router.get(
 
     const items = await ResponseModule.find(
       {
-        account
+        account,
+        // @ts-ignore
+        job
       },
       {
         skip: page * size,

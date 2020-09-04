@@ -1,8 +1,8 @@
 <mat-accordion>
-    <mat-expansion-panel *ngFor="let job of jobs$ | async">
+    <mat-expansion-panel *ngFor="let job of jobs">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{job.name}}
+                {{job.get('name').value}}
             </mat-panel-title>
             <mat-panel-description>
                 This is a summary of the content
@@ -18,3 +18,19 @@
         </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
+
+<ng-template #newJob>
+    <h4 mat-dialog-title>New Job</h4>
+
+    <form [formGroup]="form">
+        <mat-dialog-content>
+
+        </mat-dialog-content>
+
+        <mat-dialog-actions>
+            <button mat-button color="primary" [jpLoadClick]="save()">
+                Save
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>

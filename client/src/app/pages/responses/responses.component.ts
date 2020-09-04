@@ -13,7 +13,7 @@ export class ResponsesComponent implements OnInit {
     private responsesService: ResponsesService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }
