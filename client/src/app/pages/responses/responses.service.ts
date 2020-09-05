@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Response} from '../../shared/interfaces/response.interface';
 
 @Injectable()
 export class ResponsesService {
@@ -12,7 +13,7 @@ export class ResponsesService {
     job: string,
     page: number
   ) {
-    return this.http.get(`/api/responses/${job}`, {
+    return this.http.get<{hasMore: boolean, items: Response[]}>(`/api/responses/${job}`, {
       params: {
         account,
         page: page.toString()

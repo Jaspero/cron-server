@@ -13,7 +13,7 @@ export class AccountsService {
   }
 
   create(account: CAAccount) {
-    return this.http.post<void>('/api/accounts', account);
+    return this.http.post<{_id: string}>('/api/accounts', account);
   }
 
   update(id: string, account: Partial<CAAccount>) {

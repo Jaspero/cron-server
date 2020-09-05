@@ -3,11 +3,15 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadClickModule} from '@jaspero/ng-helpers';
@@ -18,15 +22,26 @@ import {AccountsComponent} from './pages/accounts/accounts.component';
 import {JobsComponent} from './pages/jobs/jobs.component';
 import {LoginComponent} from './pages/login/login.component';
 import {ResponsesComponent} from './pages/responses/responses.component';
+import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
+import {JsonEditorComponent} from './shared/components/json-editor/json-editor.component';
+import {MongoIdPipe} from './shared/pipes/mongo-id.pipe';
 import {InterceptorService} from './shared/services/interceptor.service';
 
 @NgModule({
   declarations: [
     AppComponent,
+
+    /**
+     * Pages
+     */
     LoginComponent,
     AccountsComponent,
     JobsComponent,
-    ResponsesComponent
+    ResponsesComponent,
+
+    JsonEditorComponent,
+    ConfirmationComponent,
+    MongoIdPipe
   ],
   imports: [
     BrowserModule,
@@ -45,6 +60,10 @@ import {InterceptorService} from './shared/services/interceptor.service';
     MatIconModule,
     MatExpansionModule,
     MatDialogModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatMenuModule,
+    MatChipsModule,
 
     /**
      * Ng Helpers
@@ -57,6 +76,12 @@ import {InterceptorService} from './shared/services/interceptor.service';
       useExisting: InterceptorService,
       multi: true
     },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline'
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -10,7 +10,7 @@ router.use(authenticatedUser);
 
 router.get(
   '/',
-  reqWrapper(async (req, res) => {
+  reqWrapper(async () => {
     return AccountModel.find(
       {},
       {

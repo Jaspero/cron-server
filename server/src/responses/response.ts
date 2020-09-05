@@ -2,7 +2,7 @@ import {model, Document, Schema} from 'mongoose';
 import {Job} from '../jobs/job';
 
 export interface Response extends Document {
-  job: Schema.Types.ObjectId | Job;
+  job: string | Job;
   status?: number;
   body?: any;
   headers?: {[key: string]: string};
@@ -11,7 +11,7 @@ export interface Response extends Document {
 
 const ResponseSchema = new Schema<Response>({
   job: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'Job',
     required: true
   },

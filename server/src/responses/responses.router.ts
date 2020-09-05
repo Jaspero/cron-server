@@ -28,6 +28,7 @@ router.get(
         // @ts-ignore
         job
       },
+      {},
       {
         skip: page * size,
         limit: page + 1,

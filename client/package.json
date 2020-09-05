@@ -20,7 +20,8 @@
     "@angular/platform-browser-dynamic": "10.1.0",
     "@angular/router": "10.1.0",
     "@jaspero/ng-helpers": "4.0.2",
-    "@ngneat/until-destroy": "^8.0.2",
+    "@ngneat/until-destroy": "8.0.2",
+    "jsoneditor": "9.0.4",
     "rxjs": "6.6.2",
     "tslib": "2.0.1",
     "zone.js": "0.10.3"
@@ -29,6 +30,7 @@
     "@angular-devkit/build-angular": "0.1001.0",
     "@angular/cli": "10.1.0",
     "@angular/compiler-cli": "10.1.0",
+    "@types/jsoneditor": "8.6.0",
     "@types/node": "12.12.55",
     "ts-node": "8.3.0",
     "tslint": "6.1.3",

@@ -1,11 +1,23 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {merge, Subscription} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {METHODS} from '../../shared/consts/methods.const';
+import {TIMEZONES} from '../../shared/consts/timezones.const';
 import {Job} from '../../shared/interfaces/job.interface';
+import {METHOD_COLORS} from '../../shared/method-colors.const';
+import {confirmation} from '../../shared/utils/confirmation';
 import {JobsService} from './jobs.service';
 
 @UntilDestroy()
@@ -16,7 +28,7 @@ import {JobsService} from './jobs.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [JobsService]
 })
-export class JobsComponent implements OnInit {
+export class JobsComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -30,8 +42,14 @@ export class JobsComponent implements OnInit {
 
   jobs: Array<FormGroup> = [];
   subscriptions = new Subscription();
-  form: FormGroup | undefined;
+  // @ts-ignore
+  form: FormGroup;
   acc: string = '';
+  hasSubscriptions = false;
+
+  methods = METHODS;
+  methodColors: any = METHOD_COLORS;
+  timezones = TIMEZONES;
 
   ngOnInit() {
     this.activatedRoute.params
@@ -46,50 +64,34 @@ export class JobsComponent implements OnInit {
       )
       .subscribe(jobs => {
 
-        this.subscriptions.unsubscribe();
+        if (this.hasSubscriptions) {
+          this.subscriptions.unsubscribe();
+        }
 
         this.jobs = jobs.map(job => {
 
           const form = this.creatForm(job);
 
           this.subscriptions.add(
-            merge(
-              Object.entries(form.controls).map(([key, control]) =>
-                control.valueChanges
-                  .pipe(
-                    switchMap(value =>
-                      this.jobsService.update(
-                        this.acc,
-                        {
-                          name: job.name,
-                          [key]: value
-                        }
-                      )
-                    )
-                  )
-              )
-            ).subscribe()
+            this.connectListeners(
+              job.name,
+              form
+            )
           );
 
           return form;
         });
 
+        if (this.jobs.length) {
+          this.hasSubscriptions = true;
+        }
+
         this.cdr.markForCheck();
       });
   }
 
-  creatForm(job: Partial<Job> = {}) {
-    return this.fb.group({
-      name: [job.name || '', [Validators.required, Validators.pattern(/[a-b0-9A-B\-]/)]],
-      method: job.method || 'GET',
-      url: [job.url || '', [Validators.required]],
-      schedule: [job.schedule || '', [Validators.required]],
-      timeZone: [job.timeZone || 'UTC'],
-      body: job.body || '',
-      headers: job.headers || '',
-      storeBody: job.storeBody || false,
-      storeHeaders: job.storeHeaders || false
-    })
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   openDialog() {
@@ -107,7 +109,19 @@ export class JobsComponent implements OnInit {
     return () => {
       const data = this.form?.getRawValue();
 
-      this.jobsService.create(this.acc, data)
+      /**
+       * Prevent sending defaults
+       */
+      [
+        'storeBody',
+        'storeHeaders'
+      ].forEach(key => {
+        if (data[key] === false) {
+          delete data[key];
+        }
+      });
+
+      return this.jobsService.create(this.acc, data)
         .pipe(
           tap(() => {
             const nForm = this.creatForm(data);
@@ -116,7 +130,7 @@ export class JobsComponent implements OnInit {
               this.connectListeners(
                 data.name,
                 nForm
-              ).subscribe()
+              )
             );
 
             this.jobs.push(nForm);
@@ -127,11 +141,46 @@ export class JobsComponent implements OnInit {
     }
   }
 
+  remove(name: string, index: number) {
+    confirmation([
+      switchMap(() =>
+        this.jobsService.delete(
+          this.acc,
+          name
+        )
+      ),
+      tap(() => {
+        this.jobs.splice(index, 1);
+        this.cdr.markForCheck();
+      })
+    ], {
+      header: 'Delete job',
+      description: 'Are you sure, this action can not be undone?'
+    })
+  }
+
+  private creatForm(job: Partial<Job> = {}) {
+    return this.fb.group({
+      name: [job.name || '', [Validators.required, Validators.pattern(/[a-b0-9A-B\-]/)]],
+      method: job.method || 'GET',
+      url: [job.url || '', [Validators.required]],
+      schedule: [job.schedule || '', [Validators.required]],
+      timeZone: [job.timeZone || 'UTC'],
+      body: job.body || '',
+      headers: job.headers || '',
+      storeBody: job.storeBody || false,
+      storeHeaders: job.storeHeaders || false
+    }, {
+      updateOn: 'blur'
+    })
+  }
+
   private connectListeners(name: string, form: FormGroup) {
     return merge(
-      Object.entries(form.controls).map(([key, control]) =>
+      ...Object.entries(form.controls).map(([key, control]) =>
         control.valueChanges
           .pipe(
+            distinctUntilChanged(),
             switchMap(value =>
               this.jobsService.update(
                 this.acc,
@@ -143,6 +192,6 @@ export class JobsComponent implements OnInit {
             )
           )
       )
-    );
+    ).subscribe();
   }
 }

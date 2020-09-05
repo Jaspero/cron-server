@@ -8,5 +8,12 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .then(module => {
+    /**
+     * Gives us a global reference to the injector
+     */
+    (window as any).rootInjector = module.injector;
+  })
   .catch(err => console.error(err));
