@@ -22,8 +22,8 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_KEY }}
           rm: true
-          source: "/server/*,/static*"
-          target: "cron-sever"
+          source: "server/,static/"
+          target: "cron-server"
       - name: Start server
         uses: appleboy/ssh-action@master
         with:
