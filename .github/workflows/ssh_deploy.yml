@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: npm install and build webpack
+      - name: npm install and build
         run: |
           npm ci
           npm ci --prefix server
           npm ci --prefix client
           npm run build
-      - name: Copying files to server
+      - name: copy files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_HOST }}
@@ -24,10 +24,14 @@ jobs:
           rm: true
           source: "server/,static/"
           target: "cron-server"
-      - name: Start server
+      - name: start server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_KEY }}
-          script: ls
+          script: |
+            tmux kill-session -t cron-server
+            tmux a -t cron-server
+            cd cron-server
+            sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} node server/index.js

@@ -49,11 +49,14 @@ app.use(compression());
 app.use(json());
 app.use(cors());
 
-
 app.use('/api/users', usersRouter);
 app.use('/api/accounts', accountsRouter);
 app.use('/api/jobs', jobsRouter);
 app.use('/api/responses', responsesRouter);
+
+app.get('/api/healthz', (req, res) =>
+  res.sendStatus(200)
+);
 
 app.get('/api/**', (req, res) =>
   res
