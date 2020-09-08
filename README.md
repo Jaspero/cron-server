@@ -1,3 +1,5 @@
+![Deploy](https://github.com/Jaspero/cron-server/workflows/Deploy/badge.svg)
+
 # Cron Server
 
 The Cron Server is CRON management server with a Restful API. It consists of 4 modules Users, Accounts, Jobs and Responses.
