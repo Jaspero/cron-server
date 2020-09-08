@@ -5,6 +5,7 @@ export const CONFIG = {
   },
   user: {
     initialAccount: process.env.USER_EMAIL as string,
+    initialAccountPassword: process.env.USER_PASSWORD as string,
     secret: process.env.SECRET as string
   }
 };

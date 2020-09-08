@@ -39,7 +39,7 @@ UserSchema.statics.createInitialUsers = async function() {
 
     const account = {
       email: CONFIG.user.initialAccount,
-      password: generatePassword()
+      password: CONFIG.user.initialAccountPassword || generatePassword()
     };
 
     await new UserModel(account).save();

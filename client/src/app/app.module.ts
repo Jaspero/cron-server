@@ -1,3 +1,4 @@
+import {APP_BASE_HREF} from '@angular/common';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -15,6 +16,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadClickModule} from '@jaspero/ng-helpers';
+import {environment} from '../environments/environment';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -81,6 +83,10 @@ import {InterceptorService} from './shared/services/interceptor.service';
       useValue: {
         appearance: 'outline'
       }
+    },
+    {
+      provide: APP_BASE_HREF,
+      useValue: environment.baseHref
     }
   ],
   bootstrap: [AppComponent]
