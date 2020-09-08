@@ -1,2 +1,5 @@
 node_modules
 .idea
+static
+server/src/**/**.js
+server/index.js

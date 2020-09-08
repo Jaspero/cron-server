@@ -32,6 +32,4 @@ jobs:
           key: ${{ secrets.VM_KEY }}
           script: |
             tmux kill-session -t cron-server
-            tmux a -t cron-server
-            cd cron-server
-            sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} node server/index.js
+            tmux new-session -c cron-server -d -s "cron-server" sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} node server/index.js

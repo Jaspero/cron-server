@@ -71,6 +71,7 @@
                 }
               ],
               "optimization": true,
+              "baseHref": "/cron",
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
