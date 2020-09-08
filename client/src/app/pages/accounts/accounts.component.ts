@@ -55,17 +55,6 @@ export class AccountsComponent {
       const {_id, ...data} = this.form.getRawValue();
 
       if (_id) {
-        return this.accountsService.create(data)
-          .pipe(
-            tap(({_id}) => {
-              this.accounts.push({
-                ...data,
-                _id
-              });
-              this.cdr.markForCheck();
-            })
-          )
-      } else {
         return this.accountsService.update(_id, data)
           .pipe(
             tap(() => {
@@ -78,6 +67,17 @@ export class AccountsComponent {
                 };
                 this.cdr.markForCheck();
               }
+            })
+          )
+      } else {
+        return this.accountsService.create(data)
+          .pipe(
+            tap(({_id}) => {
+              this.accounts.push({
+                ...data,
+                _id
+              });
+              this.cdr.markForCheck();
             })
           )
       }
