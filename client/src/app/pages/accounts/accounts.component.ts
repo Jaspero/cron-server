@@ -94,7 +94,10 @@ export class AccountsComponent {
           this.accounts.splice(index, 1);
           this.cdr.markForCheck();
         })
-      ]
+      ], {
+        header: 'Are you sure?',
+        description: 'You are about to delete an account.'
+        }
     )
   }
 
@@ -106,3 +109,4 @@ export class AccountsComponent {
     })
   }
 }
+

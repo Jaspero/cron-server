@@ -5,36 +5,45 @@
         <mat-dialog-content>
             <mat-form-field>
                 <mat-label>Name</mat-label>
-                <input matInput formControlName="name">
+                <input formControlName="name" matInput>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Api Key</mat-label>
-                <input matInput formControlName="apiKey">
+                <input formControlName="apiKey" matInput>
             </mat-form-field>
         </mat-dialog-content>
 
         <mat-dialog-actions>
-            <button mat-button color="primary" [jpLoadClick]="save()">
+            <button [jpLoadClick]="save()" color="primary" mat-button>
                 Save
             </button>
         </mat-dialog-actions>
     </form>
 </ng-template>
 
-<button mat-button (click)="open()">
-    Create Account
-</button>
+<mat-toolbar color="primary">
+    <button (click)="open()" mat-button>
+        Create Account
+    </button>
+</mat-toolbar>
 
-<div *ngFor="let account of accounts; index as index;">
-    <span>{{account.name}}</span>
-
-    <div>
-        <button mat-button color="warn" (click)="remove(account._id, index)">
-            Delete
-        </button>
-        &nbsp;
-        <a mat-button [routerLink]="[account._id, 'jobs']">
-            View Jobs
-        </a>
+<div class="grid">
+    <div class="col-4 p-a-s col-s-12 m-t-l" *ngFor="let account of accounts; index as index">
+        <mat-card>
+            <mat-card-content>
+                <span class="account-name">{{account.name}}</span>
+                <div>
+                    <p class="account-description">Account description</p>
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <button (click)="remove(account._id, index)" color="warn" mat-button>
+                    Delete
+                </button>
+                <a [routerLink]="[account._id, 'jobs']" mat-button>
+                    View Jobs
+                </a>
+            </mat-card-actions>
+        </mat-card>
     </div>
 </div>

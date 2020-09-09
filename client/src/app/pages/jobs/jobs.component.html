@@ -1,3 +1,49 @@
+<mat-toolbar color="primary">
+<button mat-button color="basic" (click)="openDialog()">Create Job</button>
+</mat-toolbar>
+
+<ng-container *ngIf="jobs.length; else empty">
+    <mat-accordion class="job-accord">
+        <mat-expansion-panel *ngFor="let job of jobs; index as index;">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{job.get('name')?.value}}
+                </mat-panel-title>
+                <mat-panel-description *ngIf="job.get('method') as mt">
+                    <mat-chip-list>
+                        <mat-chip [matMenuTriggerFor]="menu" [color]="methodColors[mt.value]" selected>
+                            {{mt.value}}
+                        </mat-chip>
+                    </mat-chip-list>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item *ngFor="let method of methods" (click)="mt.setValue(method)">{{method}}</button>
+                    </mat-menu>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+                <ng-container *ngTemplateOutlet="sharedFields; context: {f: job}"></ng-container>
+            </ng-template>
+
+            <mat-action-row>
+                <button mat-button color="warn" (click)="remove(job.get('name')?.value, index)">Delete</button>
+                <a mat-button color="primary" [routerLink]="[job.get('name')?.value]">
+                    View Responses
+                </a>
+            </mat-action-row>
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-container>
+
+<ng-template #empty>
+    <div class="ta-center">
+        <div class="m-t-l">
+            <h1>There are no jobs at the moment.</h1>
+        </div>
+        <img src="assets/empty-jobs-picture.jpg" alt="" width="700">
+    </div>
+</ng-template>
+
 <ng-template #sharedFields let-f="f">
     <ng-container [formGroup]="f">
         <mat-form-field>
@@ -54,36 +100,3 @@
         </mat-dialog-actions>
     </form>
 </ng-template>
-
-<button mat-button color="primary" (click)="openDialog()">Create Job</button>
-
-<mat-accordion class="job-accord">
-    <mat-expansion-panel *ngFor="let job of jobs; index as index;">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{job.get('name')?.value}}
-            </mat-panel-title>
-            <mat-panel-description *ngIf="job.get('method') as mt">
-                <mat-chip-list>
-                    <mat-chip [matMenuTriggerFor]="menu" [color]="methodColors[mt.value]" selected>
-                        {{mt.value}}
-                    </mat-chip>
-                </mat-chip-list>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item *ngFor="let method of methods" (click)="mt.setValue(method)">{{method}}</button>
-                </mat-menu>
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <ng-template matExpansionPanelContent>
-            <ng-container *ngTemplateOutlet="sharedFields; context: {f: job}"></ng-container>
-        </ng-template>
-
-        <mat-action-row>
-            <button mat-button color="warn" (click)="remove(job.get('name')?.value, index)">Delete</button>
-            <a mat-button color="primary" [routerLink]="[job.get('name')?.value]">
-                View Responses
-            </a>
-        </mat-action-row>
-    </mat-expansion-panel>
-</mat-accordion>

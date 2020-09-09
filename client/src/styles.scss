@@ -1,3 +1,10 @@
+@import "scss/00-setup/theme";
+@import "scss/01-generic/generic";
+@import "scss/01-generic/resets";
+@import "scss/02-components/loading";
+@import "scss/03-utilities/grid";
+@import "scss/03-utilities/utilities";
+
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }

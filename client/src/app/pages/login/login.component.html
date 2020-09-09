@@ -1,22 +1,27 @@
+<div class="grid">
+    <div class="m-t-xl">
 <mat-card>
-    <mat-card-header>
+    <mat-card-header class="jc-center m-a-s">
         <mat-card-title>Log In</mat-card-title>
     </mat-card-header>
     <form [formGroup]="form">
-        <mat-card-content>
+        <mat-card-content class="ta-center">
             <mat-form-field>
                 <mat-label>Email</mat-label>
                 <input type="email" matInput formControlName="email">
             </mat-form-field>
+            <br>
             <mat-form-field>
                 <mat-label>Password</mat-label>
                 <input type="password" matInput formControlName="password">
             </mat-form-field>
         </mat-card-content>
-        <mat-card-actions>
+        <mat-card-actions class="ta-center">
             <button mat-button color="primary" [jpLoadClick]="login()">
                 Log In
             </button>
         </mat-card-actions>
     </form>
 </mat-card>
+    </div>
+</div>
