@@ -5,6 +5,7 @@ import {User} from '../users/user';
 export interface Account extends Document {
   name: string;
   apiKey: string;
+  description?: string;
 
   /**
    * Methods
@@ -21,6 +22,7 @@ const AccountSchema = new Schema<User>({
     type: String,
     required: true
   },
+  description: String,
   apiKey: {
     type: String,
     required: true

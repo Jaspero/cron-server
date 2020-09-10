@@ -67,6 +67,8 @@ export class AccountsComponent {
                 };
                 this.cdr.markForCheck();
               }
+
+              this.dialog.closeAll();
             })
           )
       } else {
@@ -77,6 +79,7 @@ export class AccountsComponent {
                 ...data,
                 _id
               });
+              this.dialog.closeAll();
               this.cdr.markForCheck();
             })
           )
@@ -105,6 +108,7 @@ export class AccountsComponent {
     return this.fb.group({
       _id: account._id,
       name: [account.name || '', Validators.required],
+      description: account.description || '',
       apiKey: ['', [...account && [Validators.required]]]
     })
   }

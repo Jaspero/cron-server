@@ -82,6 +82,11 @@
             </mat-form-field>
 
             <mat-form-field>
+                <mat-label>Schedule</mat-label>
+                <input matInput formControlName="schedule">
+            </mat-form-field>
+
+            <mat-form-field>
                 <mat-label>Method</mat-label>
                 <mat-select formControlName="method">
                     <mat-option *ngFor="let method of methods" [value]="method">

@@ -136,6 +136,8 @@ export class JobsComponent implements OnInit, OnDestroy {
             this.jobs.push(nForm);
 
             this.dialog.closeAll();
+
+            this.cdr.markForCheck();
           })
         )
     }
