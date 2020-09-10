@@ -1,6 +1,37 @@
+<mat-toolbar color="primary">
+    <span>Cron Server</span>
+</mat-toolbar>
+
+<div class="container">
+    <mat-card>
+        <div class="flex ai-center">
+            <span class="m-r-auto">/ Accounts</span>
+            <button (click)="open()" mat-flat-button color="primary">Create Account</button>
+        </div>
+    </mat-card>
+
+    <br>
+
+    <mat-card>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let account of accounts; index as index">
+                <a matLine [routerLink]="[account._id, 'jobs']"><b>{{account.name}}</b></a>
+                <a matLine [routerLink]="[account._id, 'jobs']">Account description</a>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <a mat-menu-item [routerLink]="[account._id, 'jobs']">View jobs</a>
+                    <button mat-menu-item (click)="remove(account._id, index)">Delete</button>
+                </mat-menu>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-card>
+</div>
+
 <ng-template #cu>
     <form [formGroup]="form">
-        <h4 mat-dialog-title>{{form.get('_id')?.value ? 'Edit' : 'Create'}} Account</h4>
+        <h1 mat-dialog-title>{{form.get('_id')?.value ? 'Edit' : 'Create'}} Account</h1>
 
         <mat-dialog-content>
             <mat-form-field>
@@ -24,30 +55,3 @@
         </mat-dialog-actions>
     </form>
 </ng-template>
-
-<mat-toolbar color="primary">
-    <button (click)="open()" mat-button>
-        Create Account
-    </button>
-</mat-toolbar>
-
-<div class="grid">
-    <div class="col-4 p-a-s col-s-12 m-t-l" *ngFor="let account of accounts; index as index">
-        <mat-card>
-            <mat-card-content>
-                <span class="account-name">{{account.name}}</span>
-                <div>
-                    <p class="account-description">Account description</p>
-                </div>
-            </mat-card-content>
-            <mat-card-actions>
-                <button (click)="remove(account._id, index)" color="warn" mat-button>
-                    Delete
-                </button>
-                <a [routerLink]="[account._id, 'jobs']" mat-button>
-                    View Jobs
-                </a>
-            </mat-card-actions>
-        </mat-card>
-    </div>
-</div>

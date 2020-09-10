@@ -29,7 +29,7 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {MongoIdPipe} from './shared/pipes/mongo-id.pipe';
 import {InterceptorService} from './shared/services/interceptor.service';
 import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatGridListModule} from "@angular/material/grid-list";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -69,7 +69,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatMenuModule,
     MatChipsModule,
     MatToolbarModule,
-    MatGridListModule,
+    MatListModule,
     /**
      * Ng Helpers
      */

@@ -1,48 +1,88 @@
 <mat-toolbar color="primary">
-<button mat-button color="basic" (click)="openDialog()">Create Job</button>
+    <span>Cron Server</span>
 </mat-toolbar>
 
-<ng-container *ngIf="jobs.length; else empty">
-    <mat-accordion class="job-accord">
-        <mat-expansion-panel *ngFor="let job of jobs; index as index;">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{job.get('name')?.value}}
-                </mat-panel-title>
-                <mat-panel-description *ngIf="job.get('method') as mt">
-                    <mat-chip-list>
-                        <mat-chip [matMenuTriggerFor]="menu" [color]="methodColors[mt.value]" selected>
-                            {{mt.value}}
-                        </mat-chip>
-                    </mat-chip-list>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item *ngFor="let method of methods" (click)="mt.setValue(method)">{{method}}</button>
-                    </mat-menu>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-                <ng-container *ngTemplateOutlet="sharedFields; context: {f: job}"></ng-container>
-            </ng-template>
-
-            <mat-action-row>
-                <button mat-button color="warn" (click)="remove(job.get('name')?.value, index)">Delete</button>
-                <a mat-button color="primary" [routerLink]="[job.get('name')?.value]">
-                    View Responses
-                </a>
-            </mat-action-row>
-        </mat-expansion-panel>
-    </mat-accordion>
-</ng-container>
-
-<ng-template #empty>
-    <div class="ta-center">
-        <div class="m-t-l">
-            <h1>There are no jobs at the moment.</h1>
+<div class="container">
+    <mat-card>
+        <div class="flex ai-center">
+            <span class="m-r-auto">/ <a routerLink="/accounts">Accounts</a> / Jobs</span>
+            <button (click)="openDialog()" mat-flat-button color="primary">Create a Job</button>
         </div>
-        <img src="assets/empty-jobs-picture.jpg" alt="" width="700">
-    </div>
-</ng-template>
+    </mat-card>
+
+    <br>
+
+    <mat-card>
+        <ng-container *ngIf="jobs.length; else empty">
+            <mat-nav-list>
+                <mat-list-item *ngFor="let job of jobs; index as index;">
+                    <span mat-line (click)="edit(job)"><b>{{job.get('name')?.value}}</b></span>
+                    <span mat-line *ngIf="job.get('method') as mt">{{mt.value}}</span>
+                    <!--[color]="methodColors[mt.value]"-->
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <span mat-menu-item (click)="edit(job)">
+                            View Job
+                        </span>
+                        <a mat-menu-item [routerLink]="[job.get('name')?.value]">
+                            View Responses
+                        </a>
+                        <button mat-menu-item (click)="remove(job.get('name')?.value, index)">
+                            Delete
+                        </button>
+                    </mat-menu>
+                </mat-list-item>
+            </mat-nav-list>
+        </ng-container>
+
+        <ng-template #empty>
+            <div class="ta-center">
+                <br>
+                <p>There are no jobs at the moment.</p>
+                <button (click)="openDialog()" mat-flat-button color="primary">Create a Job</button>
+                <br>
+                <br>
+            </div>
+        </ng-template>
+    </mat-card>
+
+    <br>
+
+    <ng-container *ngIf="jobs.length;">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let job of jobs; index as index;">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{job.get('name')?.value}}
+                    </mat-panel-title>
+                    <mat-panel-description *ngIf="job.get('method') as mt">
+                        <mat-chip-list>
+                            <mat-chip [matMenuTriggerFor]="menu" [color]="methodColors[mt.value]" selected>
+                                {{mt.value}}
+                            </mat-chip>
+                        </mat-chip-list>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item *ngFor="let method of methods" (click)="mt.setValue(method)">{{method}}</button>
+                        </mat-menu>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                    <ng-container *ngTemplateOutlet="sharedFields; context: {f: job}"></ng-container>
+                </ng-template>
+
+                <mat-action-row>
+                    <button mat-button color="warn" (click)="remove(job.get('name')?.value, index)">Delete</button>
+                    <a mat-button color="primary" [routerLink]="[job.get('name')?.value]">
+                        View Responses
+                    </a>
+                </mat-action-row>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </ng-container>
+</div>
 
 <ng-template #sharedFields let-f="f">
     <ng-container [formGroup]="f">
@@ -100,6 +140,41 @@
 
         <mat-dialog-actions>
             <button mat-button color="primary" [jpLoadClick]="save()">
+                Save
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>
+
+<ng-template #editJob>
+    <h4 mat-dialog-title>Edit Job</h4>
+
+    <form [formGroup]="form">
+        <mat-dialog-content>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Schedule</mat-label>
+                <input matInput formControlName="schedule">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Method</mat-label>
+                <mat-select formControlName="method">
+                    <mat-option *ngFor="let method of methods" [value]="method">
+                        {{method}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <ng-container *ngTemplateOutlet="sharedFields; context: {f: form}"></ng-container>
+        </mat-dialog-content>
+
+        <mat-dialog-actions>
+            <button mat-button color="primary" [jpLoadClick]="update()">
                 Save
             </button>
         </mat-dialog-actions>

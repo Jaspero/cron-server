@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {merge, Subscription} from 'rxjs';
@@ -40,6 +40,10 @@ export class JobsComponent implements OnInit, OnDestroy {
   @ViewChild('newJob', {static: true})
   newJobDialog: TemplateRef<any> | undefined;
 
+  @ViewChild('editJob', {static: true})
+  editJobDialog: TemplateRef<any> | undefined;
+  editJobDialogRef: MatDialogRef<any> | undefined;
+
   jobs: Array<FormGroup> = [];
   subscriptions = new Subscription();
   // @ts-ignore
@@ -70,7 +74,7 @@ export class JobsComponent implements OnInit, OnDestroy {
 
         this.jobs = jobs.map(job => {
 
-          const form = this.creatForm(job);
+          const form = this.createForm(job);
 
           this.subscriptions.add(
             this.connectListeners(
@@ -95,7 +99,7 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
-    this.form = this.creatForm();
+    this.form = this.createForm();
 
     this.dialog.open(
       this.newJobDialog as TemplateRef<any>,
@@ -124,7 +128,7 @@ export class JobsComponent implements OnInit, OnDestroy {
       return this.jobsService.create(this.acc, data)
         .pipe(
           tap(() => {
-            const nForm = this.creatForm(data);
+            const nForm = this.createForm(data);
 
             this.subscriptions.add(
               this.connectListeners(
@@ -161,7 +165,7 @@ export class JobsComponent implements OnInit, OnDestroy {
     })
   }
 
-  private creatForm(job: Partial<Job> = {}) {
+  private createForm(job: Partial<Job> = {}) {
     return this.fb.group({
       name: [job.name || '', [Validators.required, Validators.pattern(/[a-b0-9A-B\-]/)]],
       method: job.method || 'GET',
@@ -195,5 +199,29 @@ export class JobsComponent implements OnInit, OnDestroy {
           )
       )
     ).subscribe();
+  }
+
+  edit(job: FormGroup) {
+    this.form = job;
+    this.editJobDialogRef = this.dialog.open(
+        this.editJobDialog as TemplateRef<any>,
+        {
+          width: '800px'
+        }
+    )
+  }
+
+  update() {
+    return () => {
+      const form = this.form.getRawValue();
+      return this.jobsService.update(this.acc, form)
+          .pipe(
+              tap(() => {
+                (this.jobs.find(job => job.get('name')?.value === form.name) as FormGroup).setValue(form);
+                (this.editJobDialogRef as MatDialogRef<any>).close();
+                this.cdr.markForCheck();
+              })
+          );
+    }
   }
 }

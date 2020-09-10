@@ -1,11 +1,31 @@
-@import "scss/00-setup/theme";
-@import "scss/01-generic/generic";
-@import "scss/01-generic/resets";
-@import "scss/02-components/loading";
-@import "scss/03-utilities/grid";
-@import "scss/03-utilities/utilities";
+html {
+  font: 16px / 1.5 sans-serif;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  background: #fafbfd;
+}
 
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+button, a {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.container {
+  max-width: 30rem;
+  margin: auto;
+  padding: 2rem;
+}
+
+.m-r-auto { margin-right: auto; }
+.ta-center { text-align: center; }
+.flex { display: flex; }
+.ai-center { align-items: center; }
