@@ -54,6 +54,12 @@ export class AccountsComponent {
     return () => {
       const {_id, ...data} = this.form.getRawValue();
 
+      for (const key in data) {
+        if (!data[key]) {
+          delete data[key];
+        }
+      }
+
       if (_id) {
         return this.accountsService.update(_id, data)
           .pipe(
@@ -62,7 +68,7 @@ export class AccountsComponent {
 
               if (index !== -1) {
                 this.accounts[index] = {
-                  ...this.accounts,
+                  ...this.accounts[index],
                   ...data
                 };
                 this.cdr.markForCheck();

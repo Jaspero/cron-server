@@ -14,7 +14,8 @@ router.get(
     return AccountModel.find(
       {},
       {
-        name: 1
+        name: 1,
+        description: 1
       }
     )
   })

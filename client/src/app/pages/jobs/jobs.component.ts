@@ -1,22 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {merge, Subscription} from 'rxjs';
-import {distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {METHODS} from '../../shared/consts/methods.const';
 import {TIMEZONES} from '../../shared/consts/timezones.const';
 import {Job} from '../../shared/interfaces/job.interface';
-import {METHOD_COLORS} from '../../shared/method-colors.const';
 import {confirmation} from '../../shared/utils/confirmation';
 import {JobsService} from './jobs.service';
 
@@ -28,7 +18,7 @@ import {JobsService} from './jobs.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [JobsService]
 })
-export class JobsComponent implements OnInit, OnDestroy {
+export class JobsComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -37,22 +27,17 @@ export class JobsComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {}
 
-  @ViewChild('newJob', {static: true})
-  newJobDialog: TemplateRef<any> | undefined;
+  @ViewChild('jobDialog', {static: true})
+  dialogTemplate: TemplateRef<any> | undefined;
 
-  @ViewChild('editJob', {static: true})
-  editJobDialog: TemplateRef<any> | undefined;
-  editJobDialogRef: MatDialogRef<any> | undefined;
-
-  jobs: Array<FormGroup> = [];
-  subscriptions = new Subscription();
+  jobs: Job[] = [];
   // @ts-ignore
   form: FormGroup;
+  entryValue: Partial<Job> | undefined;
   acc: string = '';
-  hasSubscriptions = false;
-
+  index: number | undefined;
+  loading = true;
   methods = METHODS;
-  methodColors: any = METHOD_COLORS;
   timezones = TIMEZONES;
 
   ngOnInit() {
@@ -67,42 +52,23 @@ export class JobsComponent implements OnInit, OnDestroy {
         untilDestroyed(this)
       )
       .subscribe(jobs => {
-
-        if (this.hasSubscriptions) {
-          this.subscriptions.unsubscribe();
-        }
-
-        this.jobs = jobs.map(job => {
-
-          const form = this.createForm(job);
-
-          this.subscriptions.add(
-            this.connectListeners(
-              job.name,
-              form
-            )
-          );
-
-          return form;
-        });
-
-        if (this.jobs.length) {
-          this.hasSubscriptions = true;
-        }
-
+        this.jobs = jobs;
+        this.loading = false;
         this.cdr.markForCheck();
       });
   }
 
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
+  open(job?: Job, index?: number) {
+    this.index = index;
+    this.form = this.createForm(job);
 
-  openDialog() {
-    this.form = this.createForm();
+    if (job) {
+      this.entryValue = job;
+      delete this.entryValue.name;
+    }
 
     this.dialog.open(
-      this.newJobDialog as TemplateRef<any>,
+      this.dialogTemplate as TemplateRef<any>,
       {
         width: '800px'
       }
@@ -113,34 +79,50 @@ export class JobsComponent implements OnInit, OnDestroy {
     return () => {
       const data = this.form?.getRawValue();
 
-      /**
-       * Prevent sending defaults
-       */
-      [
-        'storeBody',
-        'storeHeaders'
-      ].forEach(key => {
-        if (data[key] === false) {
-          delete data[key];
+      if (this.index !== undefined) {
+
+        for (const key in this.entryValue) {
+          // @ts-ignore
+          if (this.entryValue[key] === data[key]) {
+            delete data[key];
+          }
         }
-      });
+
+        return this.jobsService.update(this.acc, data)
+          .pipe(
+            tap(() => {
+              this.jobs[this.index as number] = {
+                ...this.jobs[this.index as number],
+                ...data
+              };
+              this.dialog.closeAll();
+              this.cdr.markForCheck();
+            })
+          );
+      } else {
+        /**
+         * Prevent sending defaults
+         */
+        [
+          'storeBody',
+          'storeHeaders'
+        ].forEach(key => {
+          if (data[key] === false) {
+            delete data[key];
+          }
+        });
+      }
+
 
       return this.jobsService.create(this.acc, data)
         .pipe(
-          tap(() => {
-            const nForm = this.createForm(data);
-
-            this.subscriptions.add(
-              this.connectListeners(
-                data.name,
-                nForm
-              )
-            );
-
-            this.jobs.push(nForm);
+          tap((resp) => {
+            this.jobs.push({
+              ...resp,
+              ...data
+            });
 
             this.dialog.closeAll();
-
             this.cdr.markForCheck();
           })
         )
@@ -179,49 +161,5 @@ export class JobsComponent implements OnInit, OnDestroy {
     }, {
       updateOn: 'blur'
     })
-  }
-
-  private connectListeners(name: string, form: FormGroup) {
-    return merge(
-      ...Object.entries(form.controls).map(([key, control]) =>
-        control.valueChanges
-          .pipe(
-            distinctUntilChanged(),
-            switchMap(value =>
-              this.jobsService.update(
-                this.acc,
-                {
-                  name,
-                  [key]: value
-                }
-              )
-            )
-          )
-      )
-    ).subscribe();
-  }
-
-  edit(job: FormGroup) {
-    this.form = job;
-    this.editJobDialogRef = this.dialog.open(
-        this.editJobDialog as TemplateRef<any>,
-        {
-          width: '800px'
-        }
-    )
-  }
-
-  update() {
-    return () => {
-      const form = this.form.getRawValue();
-      return this.jobsService.update(this.acc, form)
-          .pipe(
-              tap(() => {
-                (this.jobs.find(job => job.get('name')?.value === form.name) as FormGroup).setValue(form);
-                (this.editJobDialogRef as MatDialogRef<any>).close();
-                this.cdr.markForCheck();
-              })
-          );
-    }
   }
 }

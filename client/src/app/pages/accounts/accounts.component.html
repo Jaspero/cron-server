@@ -16,11 +16,12 @@
         <mat-nav-list>
             <mat-list-item *ngFor="let account of accounts; index as index">
                 <a matLine [routerLink]="[account._id, 'jobs']"><b>{{account.name}}</b></a>
-                <a matLine [routerLink]="[account._id, 'jobs']">Account description</a>
+                <a matLine [routerLink]="[account._id, 'jobs']">{{account.description}}</a>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="open(account)">Edit account</button>
                     <a mat-menu-item [routerLink]="[account._id, 'jobs']">View jobs</a>
                     <button mat-menu-item (click)="remove(account._id, index)">Delete</button>
                 </mat-menu>
