@@ -32,5 +32,5 @@ jobs:
           key: ${{ secrets.VM_KEY }}
           script: |
             cd cron-server
-            sudo pm2 stop cron
+            sudo pm2 stop cron-server
             sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} USER_PASSWORD=${{ secrets.USER_PASSWORD }} pm2 start server/index.js --name cron-server
