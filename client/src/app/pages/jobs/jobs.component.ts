@@ -63,7 +63,7 @@ export class JobsComponent implements OnInit {
     this.form = this.createForm(job);
 
     if (job) {
-      this.entryValue = job;
+      this.entryValue = {...job};
       delete this.entryValue.name;
     }
 
