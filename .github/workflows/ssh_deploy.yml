@@ -31,7 +31,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_KEY }}
           script: |
-            tmux kill-session -t cron-server
-            tmux new-session -c cron-server
             cd cron-server
-            sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} USER_PASSWORD=${{ secrets.USER_PASSWORD }} node server/index.js > stdout.txt 2> stderr.txt &
+            sudo pm2 stop cron
+            sudo PORT=2000 NODE_ENV=production SECRET=${{ secrets.SECRET }} DB_HOST=${{ secrets.DB_HOST }} USER_EMAIL=${{ secrets.USER_EMAIL }} USER_PASSWORD=${{ secrets.USER_PASSWORD }} pm2 start server/index.js --name cron-server
