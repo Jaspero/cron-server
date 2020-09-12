@@ -4,6 +4,8 @@
 
 The Cron Server is CRON management server with a Restful API. It consists of 4 modules Users, Accounts, Jobs and Responses.
 
+[Rest API Documentation](https://documenter.getpostman.com/view/3034144/TVK5dhBn)
+
 ## Users
 
 Users are administrators with access to the UI. There isn't any roles system so each user has permission to perform
