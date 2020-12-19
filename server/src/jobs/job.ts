@@ -183,6 +183,27 @@ JobSchema.methods.cronJob = function() {
 
 JobSchema.pre<Job>('save', function (next) {
 
+  [
+    'body',
+    'headers'
+  ].forEach(key => {
+    if (this.isModified(key)) {
+      let value;
+
+      try {
+        value = JSON.stringify(value);
+      } catch (e) {}
+
+      if (value) {
+        // @ts-ignore
+        this[key] = value;
+      } else {
+        // @ts-ignore
+        delete this[key];
+      }
+    }
+  });
+
   if (
     this.isNew ||
     [
