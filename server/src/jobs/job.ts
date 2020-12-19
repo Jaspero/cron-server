@@ -191,7 +191,8 @@ JobSchema.pre<Job>('save', function (next) {
       let value;
 
       try {
-        value = JSON.stringify(value);
+        // @ts-ignore
+        value = JSON.stringify(this[key]);
       } catch (e) {}
 
       if (value) {
