@@ -37,6 +37,7 @@ export function authenticatedAccount(
       }
     } else {
       const account = await AccountModel.findApiKey(
+        req.query.account as string,
         (authorization as string).replace('Basic ', '')
       );
 

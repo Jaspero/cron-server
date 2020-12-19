@@ -1,4 +1,4 @@
-import {hashSync} from 'bcryptjs';
+import {compareSync, hashSync} from 'bcryptjs';
 import {Document, Model, model, Schema} from 'mongoose';
 import {User} from '../users/user';
 
@@ -14,7 +14,7 @@ export interface Account extends Document {
 }
 
 export interface IAccountSchema extends Model<Account> {
-  findApiKey: (key: string) => Promise<Account>
+  findApiKey: (account: string, key: string) => Promise<Account>
 }
 
 const AccountSchema = new Schema<User>({
@@ -29,12 +29,15 @@ const AccountSchema = new Schema<User>({
   }
 });
 
-AccountSchema.statics.findApiKey = async function(key: string) {
-  return AccountModel.findOne({
-    apiKey: hashSync(key, 8)
-  }, {
-    _id: 1
-  })
+AccountSchema.statics.findApiKey = async function(_id: string, apiKey: string) {
+  const account = await AccountModel.findById(_id, {apiKey: 1});
+
+  if (account) {
+    return compareSync(apiKey, account.apiKey);
+  } else {
+    throw new Error('Account not found');
+  }
+
 };
 
 AccountSchema.methods.generateHash = function(apiKey) {
