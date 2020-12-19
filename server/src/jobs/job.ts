@@ -187,9 +187,12 @@ JobSchema.pre<Job>('save', function (next) {
     'body',
     'headers'
   ].forEach(key => {
-    if (this.isModified(key)) {
-      let value;
+    // @ts-ignore
+    const current = this[key] as any;
 
+    let value;
+
+    if (typeof current !== 'string') {
       try {
         // @ts-ignore
         value = JSON.stringify(this[key]);
