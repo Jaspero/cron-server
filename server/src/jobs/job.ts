@@ -221,9 +221,12 @@ JobSchema.pre<Job>('save', function (next) {
       this.isModified(it)
     )
   ) {
-    if (jobs[this._id]) {
-      jobs[this._id].stop();
-      delete jobs[this._id];
+
+    const _id = this._id.toString();
+
+    if (jobs[_id]) {
+      jobs[_id].stop();
+      delete jobs[_id];
     }
 
     const job = this.cronJob();
@@ -231,7 +234,7 @@ JobSchema.pre<Job>('save', function (next) {
     job.start();
 
     this.nextRun = job.nextDate().valueOf();
-    jobs[this._id] = job;
+    jobs[_id] = job;
   }
 
   next();
@@ -239,9 +242,11 @@ JobSchema.pre<Job>('save', function (next) {
 
 JobSchema.pre<Job>('remove', function (next) {
 
-  if (jobs[this._id]) {
-    jobs[this._id].stop();
-    delete jobs[this._id];
+  const _id = this._id.toString();
+
+  if (jobs[_id]) {
+    jobs[_id].stop();
+    delete jobs[_id];
   }
 
   next();
