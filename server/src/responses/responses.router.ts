@@ -17,11 +17,6 @@ router.get(
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
 
-    const response = {
-      hasMore: true,
-      items: []
-    };
-
     const items = await ResponseModule.find(
       {
         account,

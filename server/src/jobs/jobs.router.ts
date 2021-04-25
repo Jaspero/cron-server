@@ -11,10 +11,32 @@ router.use(authenticatedAccount);
 router.get(
   '/',
   reqWrapper(async req => {
+
     // @ts-ignore
     const account = req['account'] || req.query.account;
+    const {name} = req.params;
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
 
-    return JobModel.find({account})
+    const items = await JobModel.find(
+      {
+        account,
+        ...name && {name: {$regex: name, $options: 'i'}},
+      },
+      {},
+      {
+        skip: page * size,
+        limit: page + 1,
+        sort: {
+          _id: -1
+        }
+      }
+    );
+
+    return {
+      hasMore: items.length === (page + 1),
+      items: items.slice(0, -1)
+    }
   })
 );
 
