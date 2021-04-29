@@ -15,7 +15,7 @@ router.get(
     // @ts-ignore
     const account = req['account'] || req.query.account;
     const {name} = req.params;
-    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 0;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
 
     const items = await JobModel.find(
@@ -26,7 +26,7 @@ router.get(
       {},
       {
         skip: page * size,
-        limit: page + 1,
+        limit: size + 1,
         sort: {
           _id: -1
         }
@@ -34,7 +34,7 @@ router.get(
     );
 
     return {
-      hasMore: items.length === (page + 1),
+      hasMore: items.length === (size + 1),
       items: items.slice(0, -1)
     }
   })
