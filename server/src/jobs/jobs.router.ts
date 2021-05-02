@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {Schema} from 'mongoose';
+import {Types} from 'mongoose';
 import {authenticatedAccount} from '../midlewares/authenticated-account';
 import {ApiError} from '../utils/api-error';
 import {reqWrapper} from '../utils/req-wrapper';
@@ -21,7 +21,8 @@ router.get(
 
     const items = await JobModel.find(
       {
-        account: new Schema.Types.ObjectId(account),
+        // @ts-ignore
+        account: new Types.ObjectId(account),
         ...name && {name: {$regex: name, $options: 'i'}},
       },
       {},
@@ -85,7 +86,8 @@ router.delete(
 
     const job = await JobModel.findOne( {
       name,
-      account: new Schema.Types.ObjectId(account)
+      // @ts-ignore
+      account: new Types.ObjectId(account)
     });
 
     if (!job) {
@@ -106,7 +108,8 @@ router.get(
 
     const job = await JobModel.findOne({
       name,
-      account: new Schema.Types.ObjectId(account)
+      // @ts-ignore
+      account: new Types.ObjectId(account)
     });
 
     if (!job) {
