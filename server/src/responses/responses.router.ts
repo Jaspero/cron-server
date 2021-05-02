@@ -3,6 +3,7 @@ import {authenticatedAccount} from '../midlewares/authenticated-account';
 import {ApiError} from '../utils/api-error';
 import {reqWrapper} from '../utils/req-wrapper';
 import {ResponseModule} from './response';
+import {Schema} from 'mongoose';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.get(
 
     const items = await ResponseModule.find(
       {
-        account,
+        account: new Schema.Types.ObjectId(account),
         // @ts-ignore
         job
       },
@@ -47,7 +48,7 @@ router.delete(
     const account = req['account'] || req.query.account;
 
     const item = await ResponseModule.findOne({
-      account,
+      account: new Schema.Types.ObjectId(account),
       _id: req.params.id
     });
 

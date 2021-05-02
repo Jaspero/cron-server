@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import {Schema} from 'mongoose';
 import {authenticatedAccount} from '../midlewares/authenticated-account';
 import {ApiError} from '../utils/api-error';
 import {reqWrapper} from '../utils/req-wrapper';
@@ -13,14 +14,14 @@ router.get(
   reqWrapper(async req => {
 
     // @ts-ignore
-    const account = req['account'] || req.query.account;
+    const account: string = req['account'] || req.query.account;
     const {name} = req.params;
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 0;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
 
     const items = await JobModel.find(
       {
-        account,
+        account: new Schema.Types.ObjectId(account),
         ...name && {name: {$regex: name, $options: 'i'}},
       },
       {},
@@ -82,7 +83,10 @@ router.delete(
     const account = req['account'] || req.query.account;
     const name = req.params.name as string;
 
-    const job = await JobModel.findOne( {name, account});
+    const job = await JobModel.findOne( {
+      name,
+      account: new Schema.Types.ObjectId(account)
+    });
 
     if (!job) {
       throw new ApiError('Job not found.', 400);
@@ -100,7 +104,10 @@ router.get(
     const account = req['account'] || req.query.account;
     const name = req.params.name as string;
 
-    const job = await JobModel.findOne({name, account});
+    const job = await JobModel.findOne({
+      name,
+      account: new Schema.Types.ObjectId(account)
+    });
 
     if (!job) {
       throw new ApiError('Job not found.', 400);
