@@ -1,3 +1,4 @@
+import humanInterval from 'human-interval';
 import {join} from 'path';
 import {json} from 'body-parser';
 import compression from 'compression';
@@ -30,6 +31,26 @@ JobModel.registerAllJobs()
     console.error(`Failed to register jobs on startup.`, err);
     process.exit();
   });
+
+if (CONFIG.tickInterval) {
+
+  let tick = 0;
+
+  const interval = (/^[0-9]*$/.test(CONFIG.tickInterval as string) ?
+    parseInt(CONFIG.tickInterval as string, 10) :
+    humanInterval(CONFIG.tickInterval as string)) as number;
+  const process = () => {
+    JobModel.tick(interval, tick)
+      .catch(console.error);
+  };
+
+  process();
+
+  setInterval(() => {
+    tick++;
+    process();
+  }, interval);
+}
 
 UserModel.createInitialUsers()
   .then(data => {

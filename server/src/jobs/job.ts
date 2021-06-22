@@ -23,15 +23,16 @@ export interface Job extends Document {
    * ISO date or CRON pattern
    */
   schedule: string;
+  isoDate: boolean;
 
   /**
    * Moment timezone, defaults to 'UTC'
    */
   timeZone: string;
+  runnerId: string;
   body?: any;
   headers?: any;
   complete?: boolean;
-  runnerId?: string;
 
   /**
    * Methods
@@ -42,6 +43,7 @@ export interface Job extends Document {
 
 export interface IJobSchema extends Model<Job> {
   registerAllJobs: () => Promise<void>;
+  tick: (interval: number, tick: number) => Promise<void>;
 }
 
 const JobSchema = new Schema<Job>({
@@ -65,6 +67,7 @@ const JobSchema = new Schema<Job>({
   storeHeaders: Boolean,
   complete: Boolean,
   runnerId: String,
+  isoDate: Boolean,
   method: {
     type: String,
     enum: [
@@ -88,8 +91,32 @@ const JobSchema = new Schema<Job>({
 
 JobSchema.statics.registerAllJobs = async function() {
   const jobs = await JobModel.find({
+    ...CONFIG.tickInterval && {isoDate: false},
     complete: {$ne: true},
-    ...CONFIG.runnerId && {runnerId: CONFIG.runnerId}
+    runnerId: CONFIG.runnerId
+  });
+
+  for (const job of jobs) {
+    try {
+      const jJob = job.cronJob();
+      jJob.start();
+    } catch (e) {
+      console.error(job._id, e);
+    }
+  }
+};
+
+JobSchema.statics.tick = async function(interval: number, tick: number) {
+
+  const start = new Date(CONFIG.startTime + (interval * tick));
+  const end = new Date(start.getTime() + interval);
+
+  const jobs = await JobModel.find({
+    schedule: {
+      $gte: start.toISOString(),
+      $lt: end.toISOString()
+    },
+    runnerId: CONFIG.runnerId
   });
 
   for (const job of jobs) {
@@ -128,6 +155,10 @@ JobSchema.methods.newRun = function() {
       this.lastRun = status;
       this.runs = (this.runs || 0) + 1;
 
+      if (this.isoDate) {
+        this.complete = true;
+      }
+
       await this.save();
 
       const resp: any = {
@@ -161,7 +192,7 @@ JobSchema.methods.newRun = function() {
 
       this.runs = (this.runs || 0) + 1;
 
-      if (isISODate(this.schedule)) {
+      if (this.isoDate) {
         this.complete = true;
       }
 
@@ -224,7 +255,7 @@ JobSchema.pre<Job>('save', function (next) {
     }
   });
 
-  if (this.isNew && CONFIG.runnerId) {
+  if (this.isNew) {
     this.runnerId = CONFIG.runnerId;
   }
 
@@ -253,6 +284,7 @@ JobSchema.pre<Job>('save', function (next) {
 
     job.start();
 
+    this.isoDate = isISODate(this.schedule);
     this.nextRun = job.nextDate().valueOf();
     jobs[_id] = job;
   }
@@ -273,6 +305,7 @@ JobSchema.pre<Job>('remove', function (next) {
 });
 
 JobSchema.index({account: 1});
+JobSchema.index({schedule: 1, runnerId: 1}, {unique: false});
 JobSchema.index(
   {name: 1, account: 1},
   {
@@ -284,19 +317,10 @@ JobSchema.index(
   }
 );
 JobSchema.index(
-  {complete: 1},
+  {complete: 1, isoDate: 1, runnerId: 1},
   {
     partialFilterExpression: {
       complete: {$exists: true}
-    }
-  }
-);
-JobSchema.index(
-  {complete: 1, runnerId: 1},
-  {
-    partialFilterExpression: {
-      complete: {$exists: true},
-      runnerId: {$exists: true}
     }
   }
 );
