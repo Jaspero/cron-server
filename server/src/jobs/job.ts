@@ -1,5 +1,6 @@
 import {CronJob} from 'cron';
 import {Document, model, Model, Schema} from 'mongoose';
+import {CONFIG} from '../config';
 import {isISODate} from '../utils/is-iso-date';
 import {ResponseModule} from '../responses/response';
 import fetch from 'node-fetch';
@@ -29,6 +30,8 @@ export interface Job extends Document {
   timeZone: string;
   body?: any;
   headers?: any;
+  complete?: boolean;
+  runnerId?: string;
 
   /**
    * Methods
@@ -60,6 +63,8 @@ const JobSchema = new Schema<Job>({
   nextRun: Number,
   storeBody: Boolean,
   storeHeaders: Boolean,
+  complete: Boolean,
+  runnerId: String,
   method: {
     type: String,
     enum: [
@@ -82,11 +87,18 @@ const JobSchema = new Schema<Job>({
 });
 
 JobSchema.statics.registerAllJobs = async function() {
-  const jobs = await JobModel.find({});
+  const jobs = await JobModel.find({
+    complete: {$ne: true},
+    ...CONFIG.runnerId && {runnerId: CONFIG.runnerId}
+  });
 
   for (const job of jobs) {
-    const jJob = job.cronJob();
-    jJob.start();
+    try {
+      const jJob = job.cronJob();
+      jJob.start();
+    } catch (e) {
+      console.error(job._id, e);
+    }
   }
 };
 
@@ -149,6 +161,10 @@ JobSchema.methods.newRun = function() {
 
       this.runs = (this.runs || 0) + 1;
 
+      if (isISODate(this.schedule)) {
+        this.complete = true;
+      }
+
       Promise.all([
         this.save(),
         new ResponseModule({
@@ -208,6 +224,10 @@ JobSchema.pre<Job>('save', function (next) {
     }
   });
 
+  if (this.isNew && CONFIG.runnerId) {
+    this.runnerId = CONFIG.runnerId;
+  }
+
   if (
     this.isNew ||
     [
@@ -253,12 +273,32 @@ JobSchema.pre<Job>('remove', function (next) {
 });
 
 JobSchema.index({account: 1});
-JobSchema.index({name: 1, account: 1}, {
-  unique: true,
-  partialFilterExpression: {
-    name: {$exists: true},
-    account: {$exists: true}
+JobSchema.index(
+  {name: 1, account: 1},
+  {
+    unique: true,
+    partialFilterExpression: {
+      name: {$exists: true},
+      account: {$exists: true}
+    }
   }
-});
+);
+JobSchema.index(
+  {complete: 1},
+  {
+    partialFilterExpression: {
+      complete: {$exists: true}
+    }
+  }
+);
+JobSchema.index(
+  {complete: 1, runnerId: 1},
+  {
+    partialFilterExpression: {
+      complete: {$exists: true},
+      runnerId: {$exists: true}
+    }
+  }
+);
 
 export const JobModel = model<Job, IJobSchema>('Job', JobSchema);
