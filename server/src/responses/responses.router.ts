@@ -17,6 +17,9 @@ router.get(
     const {job} = req.params;
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 0;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
+    const sort = {
+      [(req.query.sort || '_id') as string]: req.query.sort_dir === 'asc' ? 1 : -1
+    };
 
     const items = await ResponseModule.find(
       {
@@ -29,9 +32,7 @@ router.get(
       {
         skip: page * size,
         limit: size + 1,
-        sort: {
-          _id: -1
-        }
+        sort
       }
     );
 
