@@ -1,8 +1,3 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - master
 
@@ -23,7 +18,7 @@ steps:
 - script: npm run build
   displayName: 'Build'
 - script: |
-    /usr/bin/zip -r $(Build.ArtifactStagingDirectory)/CRON-$(Build.BuildId).zip .
+    /usr/bin/zip -r $(Build.ArtifactStagingDirectory)/CRON-$(Build.BuildId).zip $(Build.ArtifactStagingDirectory)/server $(Build.ArtifactStagingDirectory)/static
   displayName: 'Zip'
 - task: PublishBuildArtifacts@1
   displayName: 
