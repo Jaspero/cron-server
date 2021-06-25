@@ -18,7 +18,7 @@ steps:
 - script: npm run build
   displayName: 'Build'
 - script: |
-    /usr/bin/zip -r $(Build.ArtifactStagingDirectory)/CRON-$(Build.BuildId).zip $(Build.ArtifactStagingDirectory)/server $(Build.ArtifactStagingDirectory)/static
+    /usr/bin/zip -r $(Build.ArtifactStagingDirectory)/CRON-$(Build.BuildId).zip . -i $(Build.ArtifactStagingDirectory)/server $(Build.ArtifactStagingDirectory)/static
   displayName: 'Zip'
 - task: PublishBuildArtifacts@1
   displayName: 
