@@ -15,7 +15,10 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script: npm ci
+- script: |
+    npm ci
+    npm --prefix server ci
+    npm --prefix client ci
   displayName: 'Install Dependencies'
 - script: npm run build
   displayName: 'Build'
