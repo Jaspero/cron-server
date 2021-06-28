@@ -15,7 +15,7 @@ export interface User extends Document {
 }
 
 export interface IUserSchema extends Model<User> {
-  createInitialUsers: () => Promise<{
+  createInitialUsers: (email: string, password?: string) => Promise<{
     email: string;
     password: string;
   }>;
@@ -32,14 +32,14 @@ const UserSchema = new Schema<User>({
   }
 });
 
-UserSchema.statics.createInitialUsers = async function() {
+UserSchema.statics.createInitialUsers = async function(email: string, password?: string) {
   const users = await UserModel.countDocuments();
 
   if (users === 0) {
 
     const account = {
-      email: CONFIG.user.initialAccount,
-      password: CONFIG.user.initialAccountPassword || generatePassword()
+      email,
+      password: password || generatePassword()
     };
 
     await new UserModel(account).save();
