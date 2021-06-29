@@ -24,6 +24,7 @@
     "semantic-release": "17.4.4"
   },
   "release": {
+    "branches": ["npm"],
     "pkgRoot": "dist",
     "plugins": [
       "@semantic-release/commit-analyzer",
