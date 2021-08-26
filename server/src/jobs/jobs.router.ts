@@ -15,7 +15,7 @@ router.get(
 
     // @ts-ignore
     const account: string = req['account'] || req.query.account;
-    const {name} = req.params;
+    const {name} = req.query;
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 0;
     const size = req.query.size ? parseInt(req.query.size as string, 10) : 10;
     const sort = {
