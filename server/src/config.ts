@@ -7,5 +7,6 @@ export const CONFIG: Config = {
 		initialAccountPassword: '',
 		secret: ''
 	},
+  apiKey: '',
 	runnerId: '1'
 };

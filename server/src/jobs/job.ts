@@ -117,7 +117,14 @@ JobSchema.methods.newRun = function() {
         signal: controller.signal,
         method: this.method,
         ...this.method !== 'GET' && {body: this.body},
-        ...this.headers && {headers: this.headers}
+        ...(this.headers || CONFIG.apiKey) && {
+          headers: {
+            ...(this.headers || {}),
+            ...CONFIG.apiKey && {
+              authorization: 'Basic ' + CONFIG.apiKey
+            }
+          }
+        }
       }
     );
 
