@@ -5,5 +5,6 @@ export interface Config {
 		initialAccountPassword: string;
 		secret: string;
 	};
+	apiKey?: string;
 	runnerId: string;
 }
