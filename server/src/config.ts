@@ -8,5 +8,6 @@ export const CONFIG = {
     initialAccountPassword: process.env.USER_PASSWORD as string,
     secret: process.env.SECRET as string
   },
+  apiKey: process.env.API_KEY as string,
   runnerId: process.env.RUNNER_ID as string
 };
