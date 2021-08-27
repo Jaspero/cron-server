@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/Jaspero/cron-server/compare/v1.0.0...v1.1.0) (2021-08-27)
+
+
+### Bug Fixes
+
+* **jobs.router.ts:** Changed name to query ([6326274](https://github.com/Jaspero/cron-server/commit/6326274a85802aab1868a1a7952f25627c3095c9))
+* **jobs.router.ts:** Changed name to query ([756bb6f](https://github.com/Jaspero/cron-server/commit/756bb6f371649e6dffab271883cde018b481b599))
+
+
+### Features
+
+* added apiKey to config for easy basic authorization ([aed2b47](https://github.com/Jaspero/cron-server/commit/aed2b4737172249af7ebae68ce1749bd5ab4a251))
+* formatted config for apiKey ([d3e1560](https://github.com/Jaspero/cron-server/commit/d3e1560af6b7d2040e391c6155802b5c971bdc98))
+
 # 1.0.0 (2021-06-29)
 
 
