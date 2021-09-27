@@ -64,11 +64,11 @@ router.post(
 
       await job.save();
     } else {
-      const nJob = await new JobModel({
+      const nJob = await JobModel.create({
         ...req.body,
         name,
         account
-      }).save();
+      });
 
       return {
         _id: nJob._id
