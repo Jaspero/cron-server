@@ -16,5 +16,6 @@ export const CONFIG = {
    * are loaded at startup
    */
   tickInterval: (process.env.TICK_INTERVAL || '5 minutes'),
-  startTime: Date.now()
+  startTime: Date.now(),
+  apiKey: process.env.API_KEY as string
 };
