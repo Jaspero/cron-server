@@ -117,7 +117,7 @@ JobSchema.statics.tick = async function(interval: number, tick: number) {
       $lt: end.toISOString()
     },
     runnerId: CONFIG.runnerId
-  });
+  }, {}, {sort: {nextRun: 1}});
 
   const rescheduleJob = [];
   for (const job of jobs) {
