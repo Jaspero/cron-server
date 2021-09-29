@@ -8,6 +8,12 @@ export const CONFIG = {
     initialAccountPassword: process.env.USER_PASSWORD as string,
     secret: process.env.SECRET as string
   },
+  startupStrategy: {
+    useStartup: process.env.USE_STARTUP || true,
+    /*In minutes*/
+    lowerLimit: parseFloat(process.env.LOWER_LIMIT || '10'),
+    upperLimit: parseFloat(process.env.UPPER_LIMIT || '60'),
+  },
   runnerId: process.env.RUNNER_ID || '1',
 
   /**

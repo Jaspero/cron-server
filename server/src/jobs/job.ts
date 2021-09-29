@@ -94,7 +94,7 @@ JobSchema.statics.registerAllJobs = async function() {
     ...CONFIG.tickInterval && {isoDate: false},
     complete: {$ne: true},
     runnerId: CONFIG.runnerId
-  });
+  }, {}, {sort: {nextRun: 1}});
 
   for (const job of jobs) {
     try {
@@ -119,13 +119,40 @@ JobSchema.statics.tick = async function(interval: number, tick: number) {
     runnerId: CONFIG.runnerId
   });
 
+  const rescheduleJob = [];
   for (const job of jobs) {
     try {
       const jJob = job.cronJob();
       jJob.start();
     } catch (e) {
-      console.error(job._id, e);
+      if (CONFIG.startupStrategy) {
+        rescheduleJob.push(job._id)
+      } else {
+        console.error(job._id, e);
+      }
     }
+  }
+
+  if (CONFIG.startupStrategy) {
+    let currentDate = Date.now();
+    const timeDif = ((CONFIG.startupStrategy.upperLimit - CONFIG.startupStrategy.lowerLimit) * 60000) / rescheduleJob.length;
+    currentDate += CONFIG.startupStrategy.lowerLimit
+    for (const jobId of rescheduleJob) {
+      try {
+        const job = jobs.find(x => x._id.toString() === jobId)
+        currentDate += timeDif;
+        if (job) {
+          job.nextRun = currentDate;
+          job.schedule = new Date(currentDate).toISOString();
+          await job.save()
+          const jJob = job.cronJob();
+          jJob.start();
+        }
+      } catch (e) {
+        console.error(jobId, e);
+      }
+    }
+
   }
 };
 
