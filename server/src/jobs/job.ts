@@ -91,15 +91,47 @@ const JobSchema = new Schema<Job>({
 
 JobSchema.statics.registerAllJobs = async function() {
   const jobs = await JobModel.find({
-    ...CONFIG.tickInterval && {isoDate: false},
+    ...CONFIG.tickInterval && {
+      $or: [
+        {isoDate: false},
+        ...CONFIG.startupStrategy.useStartup && [
+          {
+            schedule: {
+              $lt: new Date(CONFIG.startTime).toISOString()
+            }
+          }
+        ]
+      ]},
     complete: {$ne: true},
     runnerId: CONFIG.runnerId
   }, {}, {sort: {nextRun: 1}});
 
+  let currentDate = Date.now();
+  let timeDif = 0;
+  if (CONFIG.startupStrategy.useStartup) {
+    timeDif = ((CONFIG.startupStrategy.upperLimit - CONFIG.startupStrategy.lowerLimit) * 60000) / jobs.length;
+    currentDate += CONFIG.startupStrategy.lowerLimit;
+  }
   for (const job of jobs) {
+    if (job.isoDate) {
+      try {
+        currentDate += timeDif;
+        job.nextRun = currentDate;
+        job.schedule = new Date(currentDate).toISOString();
+        await job.save()
+        const jJob = job.cronJob();
+        if (!jJob.running) {
+          jJob.start();
+        }
+      } catch (e) {
+        console.error(job._id, e);
+      }
+    }
     try {
       const jJob = job.cronJob();
-      jJob.start();
+      if (!jJob.running) {
+        jJob.start();
+      }
     } catch (e) {
       console.error(job._id, e);
     }
@@ -119,41 +151,17 @@ JobSchema.statics.tick = async function(interval: number, tick: number) {
     runnerId: CONFIG.runnerId
   }, {}, {sort: {nextRun: 1}});
 
-  const rescheduleJob = [];
   for (const job of jobs) {
     try {
       const jJob = job.cronJob();
-      jJob.start();
+      if (!jJob.running) {
+        jJob.start();
+      }
     } catch (e) {
-      if (CONFIG.startupStrategy) {
-        rescheduleJob.push(job._id)
-      } else {
-        console.error(job._id, e);
-      }
+      console.error(job._id, e);
     }
   }
 
-  if (CONFIG.startupStrategy) {
-    let currentDate = Date.now();
-    const timeDif = ((CONFIG.startupStrategy.upperLimit - CONFIG.startupStrategy.lowerLimit) * 60000) / rescheduleJob.length;
-    currentDate += CONFIG.startupStrategy.lowerLimit
-    for (const jobId of rescheduleJob) {
-      try {
-        const job = jobs.find(x => x._id.toString() === jobId)
-        currentDate += timeDif;
-        if (job) {
-          job.nextRun = currentDate;
-          job.schedule = new Date(currentDate).toISOString();
-          await job.save()
-          const jJob = job.cronJob();
-          jJob.start();
-        }
-      } catch (e) {
-        console.error(jobId, e);
-      }
-    }
-
-  }
 };
 
 JobSchema.methods.newRun = function() {

@@ -9,7 +9,7 @@ export const CONFIG = {
     secret: process.env.SECRET as string
   },
   startupStrategy: {
-    useStartup: process.env.USE_STARTUP || true,
+    useStartup: JSON.parse(process.env.USE_STARTUP || 'true'),
     /*In minutes*/
     lowerLimit: parseFloat(process.env.LOWER_LIMIT || '10'),
     upperLimit: parseFloat(process.env.UPPER_LIMIT || '60'),
@@ -21,7 +21,7 @@ export const CONFIG = {
    * in to memory every tickInterval if falsy all jobs
    * are loaded at startup
    */
-  tickInterval: (process.env.TICK_INTERVAL || '5 minutes'),
+  tickInterval: (process.env.TICK_INTERVAL || '15 seconds'),
   startTime: Date.now(),
   apiKey: process.env.API_KEY as string
 };
