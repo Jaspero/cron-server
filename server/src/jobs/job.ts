@@ -101,11 +101,11 @@ JobSchema.statics.registerAllJobs = async function() {
             }
           }
         ]
-      ]},
+      ]
+    },
     complete: {$ne: true},
     runnerId: CONFIG.runnerId
-  }, {}, {sort: {nextRun: 1}});
-
+  });
   let currentDate = Date.now();
   let timeDif = 0;
   if (CONFIG.startupStrategy.useStartup) {
