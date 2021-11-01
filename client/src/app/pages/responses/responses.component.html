@@ -2,7 +2,7 @@
     <mat-expansion-panel *ngFor="let response of responses; index as index;">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{response._id | mongoId | date}}
+                {{response.id}}
             </mat-panel-title>
             <mat-panel-description>
                 <mat-chip-list>
