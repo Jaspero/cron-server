@@ -38,7 +38,7 @@ router.get(
 
     return {
       hasMore: items.length === (size + 1),
-      items: items.slice(0, 10)
+      items: items.slice(0, size)
     }
   })
 );
