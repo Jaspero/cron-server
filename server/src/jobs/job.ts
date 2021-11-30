@@ -168,6 +168,7 @@ JobSchema.methods.newRun = function() {
       const resp: any = {
         job: this._id,
         status,
+        account: this.account.toString()
       };
 
       if (this.storeHeaders) {
@@ -205,6 +206,7 @@ JobSchema.methods.newRun = function() {
         new ResponseModule({
           job: this._id,
           status: this.lastRun,
+          account: this.account.toString(),
           error: error.toString()
         }).save()
       ])

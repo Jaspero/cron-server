@@ -3,6 +3,7 @@ import {Job} from '../jobs/job';
 
 export interface Response extends Document {
   job: string | Job;
+  account: string;
   status?: number;
   body?: any;
   headers?: {[key: string]: string};
@@ -16,6 +17,7 @@ const ResponseSchema = new Schema<Response>({
     required: true
   },
   status: Number,
+  account: String,
   body: Schema.Types.Mixed,
   headers: Schema.Types.Mixed,
   error: String
