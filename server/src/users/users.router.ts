@@ -59,7 +59,7 @@ router.post(
 router.put(
   '/:id',
   authenticatedUser,
-  reqWrapper(async (req, res) => {
+  reqWrapper(async req => {
 
     const user = await UserModel.findById(req.params.id);
 
@@ -79,7 +79,7 @@ router.put(
 router.delete(
   '/:id',
   authenticatedUser,
-  reqWrapper(async (req, res) => {
+  reqWrapper(async req => {
 
     const user = await UserModel.findById(req.params.id);
 
