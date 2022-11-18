@@ -51,7 +51,7 @@ body and headers.
      sudo npm i -g pm2
      ```
 3. Generate an SSH key to access the VM.
-   - `ssh-keygen -t rsa -b 4096 -C "info@jaspero.co"`
+   - `ssh-keygen -t ed25519 -a 200 -C "info@jaspero.co"`
    - Add the public key to the VM (under edit in google cloud)
    - Add the private key to github secrets under `VM_KEY`
    - Add the email to github secrets under `VM_USER`
