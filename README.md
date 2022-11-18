@@ -46,10 +46,10 @@ body and headers.
      sudo systemctl start mongod
      sudo systemctl enable mongod
      ```
-  - [PM2](https://pm2.keymetrics.io/)
-    ```
-    sudo npm i -g pm2
-    ```
+   - [PM2](https://pm2.keymetrics.io/)
+     ```
+     sudo npm i -g pm2
+     ```
 3. Generate an SSH key to access the VM.
    - `ssh-keygen -t rsa -b 4096 -C "info@jaspero.co"`
    - Add the public key to the VM (under edit in google cloud)
