@@ -61,3 +61,27 @@ body and headers.
    - `USER_PASSWORD` - this is the password for the admin user
    - `DB_HOST` - `mongodb://127.0.0.1:27017`
 5. Add a `SECRET` value to github 
+6. Set up NGNIX for the api (optional). Full guide [here](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-debian-11).
+   - `sudo apt install nginx`
+   - `sudo nano /etc/nginx/sites-available/cron.jaspero.co`
+   - ```
+     server {
+          listen 80;
+          server_name cron.jaspero.co;
+          location / {
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $host;
+              proxy_pass http://127.0.0.1:2000;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+      }
+      ```
+    - `sudo ln -s /etc/nginx/sites-available/cron.jaspero.co /etc/nginx/sites-enabled/`  
+    - `sudo systemctl restart nginx`
+7. Install Certbot and HTTPS (optional). Full guide [here]().
+   ```
+   sudo apt install certbot python3-certbot-nginx
+   sudo certbot --nginx -d cron.jaspero.co
+   ```
