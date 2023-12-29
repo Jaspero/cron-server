@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --prod",
     "lint": "ng lint"
   },
   "private": true,
