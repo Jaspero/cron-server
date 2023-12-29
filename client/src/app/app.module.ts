@@ -30,6 +30,8 @@ import {MongoIdPipe} from './shared/pipes/mongo-id.pipe';
 import {InterceptorService} from './shared/services/interceptor.service';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatListModule} from "@angular/material/list";
+import {MatLineModule} from "@angular/material/core";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
@@ -70,6 +72,8 @@ import {MatListModule} from "@angular/material/list";
     MatChipsModule,
     MatToolbarModule,
     MatListModule,
+    MatLineModule,
+    MatTableModule,
     /**
      * Ng Helpers
      */

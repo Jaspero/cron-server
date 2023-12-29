@@ -26,7 +26,7 @@ export class AccountsComponent {
       .pipe(
         untilDestroyed(this)
       )
-      .subscribe(accounts => {
+      .subscribe((accounts: any[]) => {
         this.accounts = accounts;
         this.cdr.markForCheck();
       })
@@ -45,7 +45,7 @@ export class AccountsComponent {
     this.dialog.open(
       this.cuDialog as TemplateRef<any>,
       {
-        width: '800px'
+        width: '500px'
       }
     )
   }
