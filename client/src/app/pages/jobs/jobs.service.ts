@@ -11,7 +11,7 @@ export class JobsService {
   list(
     account: string
   ) {
-    return this.http.get<Job[]>(`/api/jobs`, {
+    return this.http.get<{items: Job[]}>(`/api/jobs`, {
       params: {
         account
       }

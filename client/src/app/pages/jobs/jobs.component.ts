@@ -52,7 +52,7 @@ export class JobsComponent implements OnInit {
         untilDestroyed(this)
       )
       .subscribe(jobs => {
-        this.jobs = jobs;
+        this.jobs = jobs.items;
         this.loading = false;
         this.cdr.markForCheck();
       });
