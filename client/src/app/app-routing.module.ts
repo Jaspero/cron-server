@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'accounts/:account/jobs/:job',
     component: ResponsesComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 
