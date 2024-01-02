@@ -25,6 +25,7 @@ router.get(
     const items = await JobModel.find(
       // @ts-ignore
       {
+        // @ts-ignore
         account: new Types.ObjectId(account),
         ...name && {name: {$regex: name, $options: 'i'}},
       },
