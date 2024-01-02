@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -c development",
-    "build:development": "ng build --watch -c development",
-    "build:production": "ng build -c production",
+    "build": "ng build -c production",
     "lint": "ng lint"
   },
   "private": true,
