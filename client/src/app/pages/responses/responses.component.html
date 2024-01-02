@@ -5,14 +5,13 @@
                 {{response._id | mongoId | date}}
             </mat-panel-title>
             <mat-panel-description>
-                <!--<mat-chip-list>
-                    <mat-chip [color]="response.status >= 200 && response.status <= 299 ? 'primary' : 'warn'" selected>{{response.status}}</mat-chip>
-                </mat-chip-list>-->
+                <mat-chip-listbox>
+                    <mat-chip [color]="response.status >= 200 && response.status <= 299 ? 'primary' : 'warn'">{{response.status}}</mat-chip>
+                </mat-chip-listbox>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
         <ng-template matExpansionPanelContent>
-
             <ng-container *ngIf="response.body">
                 <div>Body</div>
                 <cc-json-editor [setValue]="response.body"></cc-json-editor>
@@ -34,4 +33,8 @@
     </mat-expansion-panel>
 </mat-accordion>
 
-<button mat-button [disabled]="!hasMore" [class.loading]="loading$ | async">Load More</button>
+<div *ngIf="!responses.length">
+    No responses
+</div>
+
+<button mat-button *ngIf="hasMore" [disabled]="!hasMore" [class.loading]="loading$ | async">Load More</button>

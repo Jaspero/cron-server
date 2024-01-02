@@ -73,7 +73,6 @@
               "baseHref": "/cron/",
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -106,6 +105,9 @@
           "configurations": {
             "production": {
               "browserTarget": "cron-client:build:production"
+            },
+            "development": {
+              "browserTarget": "cron-client:build:development"
             }
           }
         },
@@ -118,5 +120,7 @@
       }
     }
   },
-  "defaultProject": "cron-client"
+  "cli": {
+    "analytics": false
+  }
 }

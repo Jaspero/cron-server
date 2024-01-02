@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build:development": "ng build --watch --configuration development",
-    "build:production": "ng build --prod",
+    "start": "ng serve -c development",
+    "build:development": "ng build --watch -c development",
+    "build:production": "ng build -c production",
     "lint": "ng lint"
   },
   "private": true,

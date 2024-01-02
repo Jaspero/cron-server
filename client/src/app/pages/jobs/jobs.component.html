@@ -4,7 +4,7 @@
 
 <div class="container">
     <mat-card>
-        <div class="flex ai-center">
+        <div class="flex ai-center p-a-s">
             <span class="m-r-auto">/ <a routerLink="/accounts">Accounts</a> / Jobs</span>
             <button (click)="open()" mat-flat-button color="primary">Create a Job</button>
         </div>
@@ -22,26 +22,32 @@
         </div>
 
         <ng-template #list>
-            <mat-nav-list>
-                <mat-list-item *ngFor="let job of jobs; index as index;">
-                    <span mat-line (click)="open(job, index)"><b>{{job.name}}</b></span>
-                    <span mat-line>{{job.method}}</span>
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <span mat-menu-item (click)="open(job, index)">
-                            View Job
-                        </span>
-                        <a mat-menu-item [routerLink]="[job.name]">
-                            View Responses
-                        </a>
-                        <button mat-menu-item (click)="remove(job.name, index)">
-                            Delete
+            <table mat-table [dataSource]="jobs" class="mat-elevation-z8">
+                <ng-container matColumnDef="Name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="Method">
+                    <th mat-header-cell *matHeaderCellDef> Method </th>
+                    <td mat-cell *matCellDef="let element"> {{element.method}} </td>
+                </ng-container>
+                <ng-container matColumnDef="Actions">
+                    <th mat-header-cell *matHeaderCellDef class="header-align-Actions"> Actions </th>
+                    <td mat-cell *matCellDef="let job; let index = index" class="header-align-Actions">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
                         </button>
-                    </mat-menu>
-                </mat-list-item>
-            </mat-nav-list>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="open(job, index)">View Job</button>
+                            <a mat-menu-item [routerLink]="[job.name]">View Responses</a>
+                            <button mat-menu-item (click)="remove(job.name, index)">Delete</button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['Name', 'Method', 'Actions']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['Name', 'Method', 'Actions']"></tr>
+            </table>
         </ng-template>
     </mat-card>
 </div>

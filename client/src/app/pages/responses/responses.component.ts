@@ -36,6 +36,7 @@ export class ResponsesComponent implements OnInit {
         untilDestroyed(this)
       )
       .subscribe(params => {
+        console.log(params);
         this.account = params.account;
         this.job = params.job;
         this.page = 0;
@@ -57,6 +58,7 @@ export class ResponsesComponent implements OnInit {
         this.page
       )
       .subscribe(data => {
+        console.log(data);
         this.hasMore = data.hasMore;
         this.responses.push(...data.items);
         this.loading$.next(false);
