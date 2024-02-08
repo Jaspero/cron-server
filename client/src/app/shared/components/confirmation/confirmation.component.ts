@@ -1,12 +1,18 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {ConfirmationOptions} from './confirmation-options.interface';
 
 @Component({
   selector: 'cc-confrimation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatButtonModule,
+    MatDialogModule
+  ],
+  standalone: true
 })
 export class ConfirmationComponent {
   constructor(

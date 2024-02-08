@@ -21,7 +21,8 @@ import JSONEditor from 'jsoneditor';
       useExisting: forwardRef(() => JsonEditorComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: true
 })
 export class JsonEditorComponent
   implements AfterViewInit, ControlValueAccessor {

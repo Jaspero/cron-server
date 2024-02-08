@@ -2,12 +2,14 @@ import {MatDialog} from '@angular/material/dialog';
 import {filter} from 'rxjs/operators';
 import {ConfirmationOptions} from '../components/confirmation/confirmation-options.interface';
 import {ConfirmationComponent} from '../components/confirmation/confirmation.component';
+import {GLOBALS} from '../consts/globals.const';
 
 export function confirmation(
   pipes: any[],
   options: Partial<ConfirmationOptions> = {}
 ) {
-  const dialog: MatDialog = (window as any).rootInjector.get(MatDialog);
+  
+  const dialog: MatDialog = GLOBALS.injector!.get(MatDialog);
 
   (dialog
     .open(ConfirmationComponent, {
@@ -16,8 +18,8 @@ export function confirmation(
     })
     .afterClosed()
     .pipe as any)(
-    filter(val => !!val),
-    ...pipes
-  )
+      filter(val => !!val),
+      ...pipes
+    )
     .subscribe();
 }

@@ -1,6 +1,16 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {RouterModule} from '@angular/router';
+import {LoadClickModule} from '@jaspero/ng-helpers';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {switchMap, tap} from 'rxjs/operators';
 import {Account} from '../../shared/interfaces/account.interface';
@@ -13,7 +23,25 @@ import {AccountsService} from './accounts.service';
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [AccountsService]
+  providers: [AccountsService],
+  imports: [
+
+    ReactiveFormsModule,
+    RouterModule,
+
+    LoadClickModule,
+
+    MatToolbarModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatMenuModule,
+    MatIconModule,
+    MatTableModule,
+    MatCardModule
+  ],
+  standalone: true
 })
 export class AccountsComponent {
   constructor(
@@ -104,9 +132,9 @@ export class AccountsComponent {
           this.cdr.markForCheck();
         })
       ], {
-        header: 'Are you sure?',
-        description: 'You are about to delete an account.'
-        }
+      header: 'Are you sure?',
+      description: 'You are about to delete an account.'
+    }
     )
   }
 

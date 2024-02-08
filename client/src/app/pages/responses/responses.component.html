@@ -1,40 +1,41 @@
 <mat-accordion>
-    <mat-expansion-panel *ngFor="let response of responses; index as index;">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{response._id | mongoId | date}}
-            </mat-panel-title>
-            <mat-panel-description>
-                <mat-chip-listbox>
-                    <mat-chip [color]="response.status >= 200 && response.status <= 299 ? 'primary' : 'warn'">{{response.status}}</mat-chip>
-                </mat-chip-listbox>
-            </mat-panel-description>
-        </mat-expansion-panel-header>
+  <mat-expansion-panel *ngFor="let response of responses; index as index;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{response._id | mongo | date}}
+      </mat-panel-title>
+      <mat-panel-description>
+        <mat-chip-listbox>
+          <mat-chip
+            [color]="response.status >= 200 && response.status <= 299 ? 'primary' : 'warn'">{{response.status}}</mat-chip>
+        </mat-chip-listbox>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
 
-        <ng-template matExpansionPanelContent>
-            <ng-container *ngIf="response.body">
-                <div>Body</div>
-                <cc-json-editor [setValue]="response.body"></cc-json-editor>
-            </ng-container>
+    <ng-template matExpansionPanelContent>
+      <ng-container *ngIf="response.body">
+        <div>Body</div>
+        <cc-json-editor [setValue]="response.body"></cc-json-editor>
+      </ng-container>
 
-            <ng-container *ngIf="response.headers">
-                <div>Headers</div>
-                <cc-json-editor [setValue]="response.headers"></cc-json-editor>
-            </ng-container>
+      <ng-container *ngIf="response.headers">
+        <div>Headers</div>
+        <cc-json-editor [setValue]="response.headers"></cc-json-editor>
+      </ng-container>
 
-            <ng-container *ngIf="response.error">
-                {{response.error}}
-            </ng-container>
-        </ng-template>
+      <ng-container *ngIf="response.error">
+        {{response.error}}
+      </ng-container>
+    </ng-template>
 
-        <mat-action-row>
-            <button mat-button color="warn" (click)="remove(response._id, index)">Delete</button>
-        </mat-action-row>
-    </mat-expansion-panel>
+    <mat-action-row>
+      <button mat-button color="warn" (click)="remove(response._id, index)">Delete</button>
+    </mat-action-row>
+  </mat-expansion-panel>
 </mat-accordion>
 
 <div *ngIf="!responses.length">
-    No responses
+  No responses
 </div>
 
 <button mat-button *ngIf="hasMore" [disabled]="!hasMore" [class.loading]="loading$ | async">Load More</button>

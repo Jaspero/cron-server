@@ -1,11 +1,19 @@
+import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 import {ActivatedRoute} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {BehaviorSubject} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import {JsonEditorComponent} from '../../shared/components/json-editor/json-editor.component';
 import {Response} from '../../shared/interfaces/response.interface';
+import {MongoIdPipe} from '../../shared/pipes/mongo-id.pipe';
 import {confirmation} from '../../shared/utils/confirmation';
 import {ResponsesService} from './responses.service';
+import {MongoIdModule} from '../../shared/pipes/mongo-pipe.module';
 
 @UntilDestroy()
 @Component({
@@ -13,7 +21,19 @@ import {ResponsesService} from './responses.service';
   templateUrl: './responses.component.html',
   styleUrls: ['./responses.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ResponsesService]
+  providers: [ResponsesService],
+  imports: [
+    CommonModule,
+    JsonEditorComponent,
+
+    MongoIdModule,
+
+    MatExpansionModule,
+    MatChipsModule,
+    MatSelectModule,
+    MatFormFieldModule
+  ],
+  standalone: true
 })
 export class ResponsesComponent implements OnInit {
   constructor(
@@ -35,8 +55,7 @@ export class ResponsesComponent implements OnInit {
       .pipe(
         untilDestroyed(this)
       )
-      .subscribe(params => {
-        console.log(params);
+      .subscribe((params: any) => {
         this.account = params.account;
         this.job = params.job;
         this.page = 0;

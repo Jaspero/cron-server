@@ -1,6 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 import {Router} from '@angular/router';
+import {LoadClickModule} from '@jaspero/ng-helpers';
 import {tap} from 'rxjs/operators';
 import {StateService} from '../../shared/services/state.service';
 import {LoginService} from './login.service';
@@ -10,7 +15,20 @@ import {LoginService} from './login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [LoginService]
+  providers: [LoginService],
+  imports: [
+
+    // CommonModule,
+    ReactiveFormsModule,
+
+    LoadClickModule,
+
+    MatCardModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  standalone: true
 })
 export class LoginComponent {
   constructor(

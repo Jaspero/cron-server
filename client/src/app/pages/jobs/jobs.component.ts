@@ -1,7 +1,14 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {ActivatedRoute} from '@angular/router';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatSelectModule} from '@angular/material/select';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {ActivatedRoute, RouterModule} from '@angular/router';
+import {LoadClickModule} from '@jaspero/ng-helpers';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {switchMap, tap} from 'rxjs/operators';
 import {METHODS} from '../../shared/consts/methods.const';
@@ -9,6 +16,8 @@ import {TIMEZONES} from '../../shared/consts/timezones.const';
 import {Job} from '../../shared/interfaces/job.interface';
 import {confirmation} from '../../shared/utils/confirmation';
 import {JobsService} from './jobs.service';
+import {MatCardModule} from '@angular/material/card';
+import {MatTableModule} from '@angular/material/table';
 
 @UntilDestroy()
 @Component({
@@ -16,7 +25,24 @@ import {JobsService} from './jobs.service';
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [JobsService]
+  providers: [JobsService],
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+
+    LoadClickModule,
+
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatMenuModule,
+    MatSelectModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule
+  ],
+  standalone: true
 })
 export class JobsComponent implements OnInit {
   constructor(
@@ -25,7 +51,7 @@ export class JobsComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private jobsService: JobsService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   @ViewChild('jobDialog', {static: true})
   dialogTemplate: TemplateRef<any> | undefined;

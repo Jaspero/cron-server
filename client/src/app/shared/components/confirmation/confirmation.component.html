@@ -1,7 +1,11 @@
 <h1 mat-dialog-title>{{options.header}}</h1>
-<div *ngIf="options.description" mat-dialog-content>
-  <p>{{options.description}}</p>
-</div>
+
+@if (options.description) {
+  <div mat-dialog-content>
+    <p>{{options.description}}</p>
+  </div>
+}
+
 <div mat-dialog-actions class="jc-end">
   <button
     mat-button

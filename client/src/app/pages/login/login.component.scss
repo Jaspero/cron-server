@@ -1,1 +1,14 @@
+:host {
+	padding-top: 50px;
+	display: block;
+}
 
+.container {
+	width: 600px;
+	max-width: 100%;
+	margin: auto;
+}
+
+mat-form-field {
+	width: 100%;
+}
