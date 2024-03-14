@@ -1,4 +1,4 @@
 export const environment = {
   baseHref: '/',
-  url: 'https://routing.jaspero.co/cron'
+  url: 'http://localhost:3000'
 };
