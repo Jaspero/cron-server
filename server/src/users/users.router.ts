@@ -9,6 +9,39 @@ import {UserModel} from './user';
 const router = Router();
 
 router.post(
+  '/signup',
+  reqWrapper(async (req, res) => {
+    const {
+      email,
+      password
+    } = req.body;
+
+    const user = await UserModel.findOne({email}, {password: 1});
+
+    if (user) {
+      throw new ApiError('User already exists', 400);
+    }
+
+    const newUser = new UserModel({
+      email,
+      password
+    });
+
+    await newUser.save();
+
+    return {
+      token: sign(
+        {_id: newUser._id, type: 'user'},
+        CONFIG.user.secret,
+        {
+          expiresIn: '1d'
+        }
+      )
+    }
+  })
+);
+
+router.post(
   '/login',
   reqWrapper(async (req, res) => {
     const {
