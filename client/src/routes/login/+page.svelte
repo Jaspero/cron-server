@@ -4,6 +4,7 @@
   import { createFieldValidator } from './validation.js'
   import {writable} from "svelte/store";
   import {session} from './sessions.js';
+  import { goto } from '$app/navigation';
 
   const AUTH_SERVER_URL_LOGIN = '/api/users/login';
   const AUTH_SERVER_URL_SIGNUP = '/api/users/signup';
@@ -29,8 +30,6 @@
   async function authenticate() {
     let url = 'http://localhost:3000' + (mode === 'login' ? AUTH_SERVER_URL_LOGIN : AUTH_SERVER_URL_SIGNUP);
 
-    console.log(url);
-
     let response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -49,14 +48,16 @@
     event.preventDefault();
     try {
       const result = await authenticate();
-      console.log('Authentication successful:', result);
+      if (result.token) {
+        session.set(result.token);
+        await goto('/dashboard');
+      }
       email = '';
       password = '';
     } catch (error) {
       console.error('Authentication error:', error);
     }
   }
-
 
   function formChange(src: string) {
     formState.set(src);
@@ -71,50 +72,39 @@
                 {#if $formState === 'login'}
                     <div>
                         <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">Sign In</h3>
-                        <Label class="space-y-2">
+                        <Label class="space-y-2 mt-3.5">
                             <span>Your email</span>
                             <Input type="email" name="email" placeholder="name@company.com" required bind:value={email}/>
                         </Label>
-                        <Label class="space-y-2">
+                        <Label class="space-y-2 mt-3.5">
                             <span>Your password</span>
                             <Input type="password" name="password" placeholder="•••••" required bind:value={password}/>
                         </Label>
-                        <div class="flex items-start">
+                        <div class="flex items-start mt-3.5">
                             <Checkbox>Remember me</Checkbox>
                         </div>
-                        <a href="/" class="flex items-start justify-start text-sm text-blue-700 hover:underline dark:text-blue-500">Forgot password?</a>
-                        <Button on:click={() => mode = 'login'} type="submit" class="w-full">Sign in</Button>
-                        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                        <a href="/" class="flex items-start justify-start text-sm text-blue-700 hover:underline dark:text-blue-500 mt-3.5">Forgot password?</a>
+                        <Button on:click={() => mode = 'login'} type="submit" class="w-full mt-3.5">Sign in</Button>
+                        <p class="text-sm font-light text-gray-500 dark:text-gray-400 mt-3.5">
                             Don’t have an account yet? <a on:click={() => formChange('signup')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                         </p>
                     </div>
                 {:else}
                     <div>
                         <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">Create account</h3>
-                        <Label class="space-y-2">
+                        <Label class="space-y-2 mt-3.5">
                             <span>Your email</span>
                             <Input type="email" name="email" placeholder="name@company.com" required bind:value={email}/>
                         </Label>
-                        <Label class="space-y-2">
+                        <Label class="space-y-2 mt-3.5">
                             <span>Your password</span>
                             <Input type="password" name="password" placeholder="•••••" required bind:value={password} />
                         </Label>
-                        <Button on:click={() => mode = 'signup'} type="submit" class="w-full">Create an account</Button>
-                        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                        <Button on:click={() => mode = 'signup'} type="submit" class="w-full mt-3.5">Create an account</Button>
+                        <p class="text-sm font-light text-gray-500 dark:text-gray-400 mt-3.5">
                             Already have an account?
-                            <a on:click={() => formChange('login')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                            <a on:click={() => formChange('login')} class="font-medium text-primary-600 hover:underline dark:text-primary-500 mt-3.5">Login here</a>
                         </p>
-                        {#if result === undefined}
-                            <p>Your account does not exist!</p>
-                        {:else}
-                            {#await result}
-                                <div><span>Processing...</span></div>
-                            {:then value}
-                                <div><span>{value}</span></div>
-                            {:catch error}
-                                <div><span>{error.message}</span></div>
-                            {/await}
-                        {/if}
                     </div>
                 {/if}
             </form>

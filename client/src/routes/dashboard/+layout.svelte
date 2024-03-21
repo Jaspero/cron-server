@@ -1,7 +1,12 @@
 <script>
-  import "../app.pcss";
+  import "../../app.pcss";
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider } from 'flowbite-svelte';
-  import {page} from "$app/stores";
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+
+  function signOut () {
+    goto('/login');
+  }
 
   const filterRoutes = [
     '/login'
@@ -21,14 +26,13 @@
         </div>
         <Dropdown placement="bottom" triggeredby="#avatar-menu">
             <DropdownHeader>
-                <span class="block text-sm">Antonio Istvanovic</span>
                 <span class="block truncate text-sm font-medium">admin@jaspero.co</span>
             </DropdownHeader>
             <DropdownItem>Dashboard</DropdownItem>
             <DropdownItem>Settings</DropdownItem>
             <DropdownItem>Jobs</DropdownItem>
             <DropdownDivider></DropdownDivider>
-            <DropdownItem>Sign out</DropdownItem>
+            <DropdownItem on:click={() => signOut()}>Sign out</DropdownItem>
         </Dropdown>
         <NavUl>
             <NavLi href="/" active="{true}">Home</NavLi>
