@@ -27,7 +27,9 @@
   }
 
   async function authenticate() {
-    let url = mode === 'login' ? AUTH_SERVER_URL_LOGIN : AUTH_SERVER_URL_SIGNUP;
+    let url = 'http://localhost:3000' + (mode === 'login' ? AUTH_SERVER_URL_LOGIN : AUTH_SERVER_URL_SIGNUP);
+
+    console.log(url);
 
     let response = await fetch(url, {
       method: 'POST',
@@ -37,16 +39,24 @@
       body: JSON.stringify(combined)
     });
 
-    let text = await response.text();
+    let text = await response.json();
     let data = text;
     return text;
   }
 
-  function submitHandler() {
-    result = authenticate();
-    email = '';
-    password = '';
+  async function submitHandler(event) {
+    console.log('submitHandler');
+    event.preventDefault();
+    try {
+      const result = await authenticate();
+      console.log('Authentication successful:', result);
+      email = '';
+      password = '';
+    } catch (error) {
+      console.error('Authentication error:', error);
+    }
   }
+
 
   function formChange(src: string) {
     formState.set(src);
@@ -57,9 +67,9 @@
     <div class="login-form w-96 my-24 border-solid border-2 border-gray-200">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0 flex justify-center items-center">Cron Server</h3>
-            <form class="flex flex-col space-y-6" action="/">
+            <form class="flex flex-col space-y-6" on:submit={submitHandler}>
                 {#if $formState === 'login'}
-                    <div on:submit|preventDefault={() => submitHandler()}>
+                    <div>
                         <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">Sign In</h3>
                         <Label class="space-y-2">
                             <span>Your email</span>
@@ -73,7 +83,7 @@
                             <Checkbox>Remember me</Checkbox>
                         </div>
                         <a href="/" class="flex items-start justify-start text-sm text-blue-700 hover:underline dark:text-blue-500">Forgot password?</a>
-                        <Button on:click={() => mode = 'login'} type="button" class="w-full1">Sign in</Button>
+                        <Button on:click={() => mode = 'login'} type="submit" class="w-full">Sign in</Button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                             Don’t have an account yet? <a on:click={() => formChange('signup')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                         </p>
@@ -89,7 +99,7 @@
                             <span>Your password</span>
                             <Input type="password" name="password" placeholder="•••••" required bind:value={password} />
                         </Label>
-                        <Button on:click={() => mode = 'signup'} type="button" class="w-full1">Create an account</Button>
+                        <Button on:click={() => mode = 'signup'} type="submit" class="w-full">Create an account</Button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                             Already have an account?
                             <a on:click={() => formChange('login')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
