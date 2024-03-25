@@ -16,8 +16,6 @@
   let password = '';
   let formState = writable('login');
   let mode = 'login';
-  let result;
-
   let combined;
   let data;
 
@@ -44,7 +42,6 @@
   }
 
   async function submitHandler(event) {
-    console.log('submitHandler');
     event.preventDefault();
     try {
       const result = await authenticate();
