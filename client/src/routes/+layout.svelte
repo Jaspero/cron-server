@@ -3,6 +3,7 @@
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider } from 'flowbite-svelte';
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
+  import '@jaspero/web-components/dist/alert.wc';
 
   function signOut () {
     goto('/login');

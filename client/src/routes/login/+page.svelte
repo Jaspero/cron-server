@@ -5,6 +5,7 @@
   import {writable} from "svelte/store";
   import {session} from './sessions.js';
   import { goto } from '$app/navigation';
+  import { alertWrapper } from "$lib/utils/alert-wrapper";
 
   const AUTH_SERVER_URL_LOGIN = '/api/users/login';
   const AUTH_SERVER_URL_SIGNUP = '/api/users/signup';
@@ -43,17 +44,20 @@
 
   async function submitHandler(event) {
     event.preventDefault();
-    try {
-      const result = await authenticate();
+
+    await alertWrapper(
+      authenticate(),
+      'Login successful',
+      (error) => console.log(error),
+      () => console.log('Error'),
+    ).then((result) => {
       if (result.token) {
         session.set(result.token);
-        await goto('/dashboard');
+        goto('/dashboard');
       }
       email = '';
       password = '';
-    } catch (error) {
-      console.error('Authentication error:', error);
-    }
+    });
   }
 
   function formChange(src: string) {
