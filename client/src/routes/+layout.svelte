@@ -4,16 +4,18 @@
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
   import '@jaspero/web-components/dist/alert.wc';
-
-  function signOut () {
-    goto('/login');
-  }
+  import {onMount} from "svelte";
+  import {user} from "$lib/utils/state.ts";
 
   const filterRoutes = [
     '/login'
   ];
 
   $: hideNav = filterRoutes.includes($page.url.pathname);
+
+  function signOut () {
+    goto('/login');
+  }
 </script>
 
 {#if !hideNav}
@@ -27,7 +29,7 @@
         </div>
         <Dropdown placement="bottom" triggeredby="#avatar-menu">
             <DropdownHeader>
-                <span class="block truncate text-sm font-medium">admin@jaspero.co</span>
+                <span class="block truncate text-sm font-medium">{$user?.email}</span>
             </DropdownHeader>
             <DropdownItem href="/dashboard">Dashboard</DropdownItem>
             <DropdownItem>Settings</DropdownItem>

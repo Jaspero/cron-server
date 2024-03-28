@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "start": "node -r dotenv/config index.js",
-    "start:watch": "nodemon -r dotenv/config index.js"
+    "start:watch": "nodemon -r dotenv/config index.ts"
   },
   "dependencies": {
     "abort-controller": "3.0.0",

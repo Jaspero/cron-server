@@ -6,6 +6,7 @@
   import {session} from './sessions.js';
   import { goto } from '$app/navigation';
   import { alertWrapper } from "$lib/utils/alert-wrapper";
+  import {user} from "$lib/utils/state";
 
   const AUTH_SERVER_URL_LOGIN = '/api/users/login';
   const AUTH_SERVER_URL_SIGNUP = '/api/users/signup';
@@ -51,6 +52,12 @@
       (error) => console.log(error),
       () => console.log('Error'),
     ).then((result) => {
+      if (result.email) {
+        user.set({
+            email: result.email,
+            token: result.token
+        })
+      }
       if (result.token) {
         session.set(result.token);
         goto('/dashboard');
@@ -63,7 +70,6 @@
   function formChange(src: string) {
     formState.set(src);
   }
-
 </script>
 <div class="flex justify-center items-center">
     <div class="login-form w-96 my-24 border-solid border-2 border-gray-200">

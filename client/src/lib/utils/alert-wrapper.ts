@@ -10,7 +10,6 @@ export async function alertWrapper(
   try {
     resp = await request;
 
-    console.log('response', resp);
     if (resp.error) {
       if (onError) {
         onError();

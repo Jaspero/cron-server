@@ -36,7 +36,8 @@ router.post(
         {
           expiresIn: '1d'
         }
-      )
+      ),
+      email: email
     }
   })
 );
@@ -55,6 +56,9 @@ router.post(
       throw new ApiError('Invalid email and password combination', 403);
     }
 
+    const userString = JSON.stringify(user);
+    res.setHeader('Set-Cookie', userString);
+
     return {
       token: sign(
         {_id: user._id, type: 'user'},
@@ -62,10 +66,12 @@ router.post(
         {
           expiresIn: '1d'
         }
-      )
+      ),
+      email: email
     }
   })
 );
+
 
 router.get(
   '/',
