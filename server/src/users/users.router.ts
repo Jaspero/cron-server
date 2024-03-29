@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {sign} from 'jsonwebtoken';
+import {sign, verify} from 'jsonwebtoken';
 import {CONFIG} from '../config';
 import {authenticatedUser} from '../midlewares/authenticated-user';
 import {ApiError} from '../utils/api-error';
@@ -72,6 +72,24 @@ router.post(
   })
 );
 
+router.post (
+  '/verify',
+  reqWrapper(async (req, res) => {
+    const token = req.body.token;
+
+    try {
+      verify(token, CONFIG.user.secret);
+
+      return true;
+    } catch (e) {
+      // @ts-ignore
+      if (e.name === 'TokenExpiredError') {
+        throw new ApiError('Token expired', 403);
+      }
+
+      throw new ApiError('Invalid token', 403);
+    }
+  }));
 
 router.get(
   '/',

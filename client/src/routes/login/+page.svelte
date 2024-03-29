@@ -39,7 +39,7 @@
     });
 
     let text = await response.json();
-    let data = text;
+
     return text;
   }
 
@@ -56,7 +56,12 @@
         user.set({
             email: result.email,
             token: result.token
-        })
+        });
+        localStorage.setItem('user', JSON.stringify({
+          email: result.email,
+          token: result.token
+        }));
+        localStorage.setItem('token', result.token);
       }
       if (result.token) {
         session.set(result.token);

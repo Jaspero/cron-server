@@ -1,20 +1,85 @@
 <script>
   import "../app.pcss";
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider } from 'flowbite-svelte';
-  import { page } from "$app/stores";
+  import {navigating, page} from "$app/stores";
   import { goto } from "$app/navigation";
   import '@jaspero/web-components/dist/alert.wc';
-  import {onMount} from "svelte";
   import {user} from "$lib/utils/state.ts";
+  import {browser} from "$app/environment";
+
+  let loading = false;
 
   const filterRoutes = [
     '/login'
   ];
 
+  const UNAUTHENTICATED_ROUTES = [
+    '/login'
+  ];
+
   $: hideNav = filterRoutes.includes($page.url.pathname);
+  $: if (!$navigating && browser) checkRoute();
 
   function signOut () {
+    user.set(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     goto('/login');
+  }
+
+  async function isAuthenticated() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        return false;
+    }
+
+    let url = 'http://localhost:3000/api/users/verify';
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token })
+    });
+
+    let result = await response.json();
+
+    if (result.error) {
+      signOut();
+      return;
+    }
+
+    return true;
+  }
+
+  async function checkRoute() {
+    loading = true;
+    const route = $page?.route?.id;
+
+    if (!route) {
+      loading = false;
+        return;
+    }
+
+    const isUnauthenticatedRoute = UNAUTHENTICATED_ROUTES.includes(route);
+    const isAuth = await isAuthenticated();
+
+
+    if (isUnauthenticatedRoute) {
+      if (isAuth) {
+        goto('/dashboard');
+      }
+      loading = false;
+      return;
+    }
+
+    if (!isAuth) {
+      signOut();
+    }
+
+    loading = false;
   }
 </script>
 
