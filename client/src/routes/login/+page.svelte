@@ -95,13 +95,13 @@
                         <div class="flex items-start mt-3.5">
                             <Checkbox>Remember me</Checkbox>
                         </div>
-                        <a href="/" class="flex items-start justify-start text-sm text-blue-700 hover:underline dark:text-blue-500 mt-3.5">Forgot password?</a>
+                        <a  on:click={() => formChange('reset-password')} class="flex items-start justify-start text-sm text-blue-700 hover:underline dark:text-blue-500 mt-3.5">Forgot password?</a>
                         <Button on:click={() => mode = 'login'} type="submit" class="w-full mt-3.5">Sign in</Button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 mt-3.5">
                             Don’t have an account yet? <a on:click={() => formChange('signup')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                         </p>
                     </div>
-                {:else}
+                {:else if $formState === 'signup'}
                     <div>
                         <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">Create account</h3>
                         <Label class="space-y-2 mt-3.5">
@@ -118,6 +118,19 @@
                             <a on:click={() => formChange('login')} class="font-medium text-primary-600 hover:underline dark:text-primary-500 mt-3.5">Login here</a>
                         </p>
                     </div>
+                {:else}
+                    <div>
+                        <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">Reset password</h3>
+                        <Label class="space-y-2 mt-3.5">
+                            <span>Your email</span>
+                            <Input type="email" name="email" placeholder="name@company.com" required bind:value={email}/>
+                        </Label>
+                        <Button on:click={() => mode = 'reset-password'} type="submit" class="w-full mt-3.5">Send reset link</Button>
+                        <p class="text-sm font-light text-gray-500 dark:text-gray-400 mt-3.5">
+                            Don’t have an account yet? <a on:click={() => formChange('signup')} class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                        </p>
+                    </div>
+
                 {/if}
             </form>
         </div>

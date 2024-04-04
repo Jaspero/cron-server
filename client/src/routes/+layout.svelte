@@ -60,7 +60,7 @@
 
     if (!route) {
       loading = false;
-        return;
+      return;
     }
 
     const isUnauthenticatedRoute = UNAUTHENTICATED_ROUTES.includes(route);
@@ -80,6 +80,10 @@
     }
 
     loading = false;
+  }
+
+  function forgetPassword() {
+
   }
 </script>
 
