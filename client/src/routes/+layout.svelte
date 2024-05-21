@@ -6,6 +6,7 @@
   import '@jaspero/web-components/dist/alert.wc';
   import {user} from "$lib/utils/state.ts";
   import {browser} from "$app/environment";
+  import {onMount} from "svelte";
 
   let loading = false;
 
@@ -82,14 +83,16 @@
     loading = false;
   }
 
-  function forgetPassword() {
 
-  }
+  onMount(() => {
+    goto('/login');
+  })
+
 </script>
 
 {#if !hideNav}
     <Navbar class="shadow-lg">
-        <NavBrand href="/">
+        <NavBrand>
             <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Cron Server</span>
         </NavBrand>
         <div class="flex items-center md:order-2">
@@ -100,18 +103,18 @@
             <DropdownHeader>
                 <span class="block truncate text-sm font-medium">{$user?.email}</span>
             </DropdownHeader>
-            <DropdownItem href="/dashboard">Dashboard</DropdownItem>
+            <DropdownItem>Dashboard</DropdownItem>
             <DropdownItem>Settings</DropdownItem>
-            <DropdownItem href="/jobs">Jobs</DropdownItem>
+            <DropdownItem>Jobs</DropdownItem>
             <DropdownDivider></DropdownDivider>
             <DropdownItem on:click={() => signOut()}>Sign out</DropdownItem>
         </Dropdown>
         <NavUl>
-            <NavLi href="/" active="{true}">Home</NavLi>
-            <NavLi href="/users">Users</NavLi>
-            <NavLi href="/accounts">Accounts</NavLi>
-            <NavLi href="/jobs">Jobs</NavLi>
-            <NavLi href="/responses">Responses</NavLi>
+            <NavLi active="{true}">Home</NavLi>
+            <NavLi active="{true}">Users</NavLi>
+            <NavLi active="{true}">Accounts</NavLi>
+            <NavLi active="{true}">Jobs</NavLi>
+            <NavLi active="{true}">Responses</NavLi>
         </NavUl>
     </Navbar>
 {/if}

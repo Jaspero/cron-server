@@ -10,6 +10,7 @@
 
   const AUTH_SERVER_URL_LOGIN = '/api/users/login';
   const AUTH_SERVER_URL_SIGNUP = '/api/users/signup';
+  const AUTH_SERVER_URL_RESET = '/api/users/reset-password';
 
 
   const [validity, validate] = createFieldValidator(requiredValidator(), emailValidator());
@@ -43,33 +44,61 @@
     return text;
   }
 
+  async function resetPass() {
+    let url = 'http://localhost:3000' + AUTH_SERVER_URL_RESET;
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email: email})
+    });
+
+    let text = await response.json();
+    return text;
+  }
+
+
   async function submitHandler(event) {
     event.preventDefault();
 
-    await alertWrapper(
-      authenticate(),
-      'Login successful',
-      (error) => console.log(error),
-      () => console.log('Error'),
-    ).then((result) => {
-      if (result.email) {
-        user.set({
+    if (mode === 'login' || mode === 'signup') {
+      await alertWrapper(
+        authenticate(),
+        'Login successful',
+        (error) => console.log(error),
+        () => console.log('Error'),
+      ).then((result) => {
+        if (result.email) {
+          user.set({
             email: result.email,
             token: result.token
-        });
-        localStorage.setItem('user', JSON.stringify({
-          email: result.email,
-          token: result.token
-        }));
-        localStorage.setItem('token', result.token);
-      }
-      if (result.token) {
-        session.set(result.token);
-        goto('/dashboard');
-      }
-      email = '';
-      password = '';
-    });
+          });
+          localStorage.setItem('user', JSON.stringify({
+            email: result.email,
+            token: result.token
+          }));
+          localStorage.setItem('token', result.token);
+        }
+        if (result.token) {
+          session.set(result.token);
+          goto('/dashboard');
+        }
+        email = '';
+        password = '';
+      });
+    } else if (mode === 'reset-password') {
+     await alertWrapper(
+        resetPass(),
+        'Reset link sent to your email',
+        (error) => console.log(error),
+        () => console.log('Error'),
+      ).then(() => {
+        email = '';
+        password = '';
+      });
+    }
   }
 
   function formChange(src: string) {
