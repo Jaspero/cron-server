@@ -11,11 +11,13 @@
   let loading = false;
 
   const filterRoutes = [
-    '/login'
+    '/login',
+    '/reset-password'
   ];
 
   const UNAUTHENTICATED_ROUTES = [
-    '/login'
+    '/login',
+    '/reset-password'
   ];
 
   $: hideNav = filterRoutes.includes($page.url.pathname);
@@ -85,8 +87,17 @@
 
 
   onMount(() => {
-    goto('/login');
+    checkRoute();
   })
+
+  onMount(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      user.set(JSON.parse(storedUser));
+    } else {
+      goto('/login');
+    }
+  });
 
 </script>
 
@@ -110,10 +121,8 @@
             <DropdownItem on:click={() => signOut()}>Sign out</DropdownItem>
         </Dropdown>
         <NavUl>
-            <NavLi active="{true}">Home</NavLi>
             <NavLi active="{true}">Users</NavLi>
             <NavLi active="{true}">Accounts</NavLi>
-            <NavLi active="{true}">Jobs</NavLi>
             <NavLi active="{true}">Responses</NavLi>
         </NavUl>
     </Navbar>
