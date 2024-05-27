@@ -72,7 +72,7 @@
 
     if (isUnauthenticatedRoute) {
       if (isAuth) {
-        goto('/dashboard');
+        goto('/accounts');
       }
       loading = false;
       return;
@@ -114,16 +114,17 @@
             <DropdownHeader>
                 <span class="block truncate text-sm font-medium">{$user?.email}</span>
             </DropdownHeader>
-            <DropdownItem>Dashboard</DropdownItem>
-            <DropdownItem>Settings</DropdownItem>
+            <DropdownItem>Users</DropdownItem>
+            <DropdownItem>Accounts</DropdownItem>
             <DropdownItem>Jobs</DropdownItem>
+            <DropdownItem>Responses</DropdownItem>
             <DropdownDivider></DropdownDivider>
             <DropdownItem on:click={() => signOut()}>Sign out</DropdownItem>
         </Dropdown>
         <NavUl>
-            <NavLi active="{true}">Users</NavLi>
-            <NavLi active="{true}">Accounts</NavLi>
-            <NavLi active="{true}">Responses</NavLi>
+            <NavLi href="/users" active="{true}">Users</NavLi>
+            <NavLi href="/accounts" active="{true}">Accounts</NavLi>
+            <NavLi href="/responses" active="{true}">Responses</NavLi>
         </NavUl>
     </Navbar>
 {/if}
