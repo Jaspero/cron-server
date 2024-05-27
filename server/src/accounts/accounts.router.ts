@@ -24,8 +24,8 @@ router.get(
 router.post(
   '/',
   reqWrapper(async req => {
-    const {_id} = await new AccountModel(req.body).save();
-    return {_id};
+    const data = await new AccountModel(req.body).save();
+    return data;
   })
 );
 
@@ -37,6 +37,8 @@ router.get(
     if (!account) {
       throw new ApiError('Account not found.', 400);
     }
+
+    const accountName = account.name;
 
     return account;
   })
